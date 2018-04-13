@@ -22,7 +22,7 @@ function varargout = semanticLabelingTool(varargin)
 
 % Edit the above text to modify the response to help semanticLabelingTool
 
-% Last Modified by GUIDE v2.5 20-Jun-2016 17:15:23
+% Last Modified by GUIDE v2.5 13-Apr-2018 17:52:48
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -40,6 +40,8 @@ if nargout
     [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
 else
     gui_mainfcn(gui_State, varargin{:});
+end
+
 end
 % End initialization code - DO NOT EDIT
 
@@ -59,9 +61,11 @@ handles.output = hObject;
 % handles.filelistFile = '/home/garbade/datasets/goPro/filelist_1280x720.txt';
 % handles.annoDir = '/home/garbade/datasets/goPro/annotations';
 % handles.imgDir = '/home/garbade/datasets/goPro/images_1280x720';
-handles.filelistFile = '/home/garbade/datasets/roemerstrasse/filelist.txt';
-handles.annoDir = '/home/garbade/datasets/roemerstrasse/annotations';
-handles.imgDir = '/home/garbade/datasets/roemerstrasse/images';
+handles.filelistFile = '/media/data/bruppik/deeplab_resnet_test_dataset/filelist.txt';
+handles.annoDir = '/media/data/bruppik/deeplab_resnet_test_dataset/annotations';
+handles.inferenceDir = '/media/data/bruppik/deeplab_resnet_test_dataset/inference';
+handles.imgDir = '/media/data/bruppik/deeplab_resnet_test_dataset/images';
+
 handles.imgName = '';
 handles.imgId = '';
 handles.img = [];
@@ -126,7 +130,7 @@ guidata(hObject, handles);
 
 % UIWAIT makes semanticLabelingTool wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
-
+end
 
 % --- Outputs from this function are returned to the command line.
 function varargout = semanticLabelingTool_OutputFcn(hObject, eventdata, handles) 
@@ -137,6 +141,7 @@ function varargout = semanticLabelingTool_OutputFcn(hObject, eventdata, handles)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
+end
 
 
 % --- Executes on button press in btnPrevious.
@@ -148,6 +153,7 @@ if imgIdx > 1
     imgIdx = imgIdx - 1;
     updateImg(imgIdx,hObject,handles)
     
+end
 end
 
 
@@ -163,6 +169,7 @@ if imgIdx < handles.numImgs
     updateImg(imgIdx,hObject,handles)
     
 end
+end
 
 
 % --- Executes on button press in btnLoadAnnotation.
@@ -173,6 +180,7 @@ function btnLoadAnnotation_Callback(hObject, eventdata, handles)
 % Store superPixels along with Annotations
 
 updateImg(handles.imgIdx,hObject,handles)
+end
 
 
 % --- Executes on slider movement.
@@ -183,7 +191,8 @@ function sliderRegionSize_Callback(hObject, eventdata, handles)
 sliderRegionSizeValue = get(hObject,'Value');
 set(handles.etRegionSize,'String',num2str(sliderRegionSizeValue));
 handles.regionSize = sliderRegionSizeValue;
-guidata(hObject, handles); 
+guidata(hObject, handles);
+end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -191,6 +200,7 @@ function sliderRegionSize_CreateFcn(hObject, eventdata, handles)
 % Hint: slider controls usually have a light gray background.
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
 end
 
 
@@ -202,6 +212,7 @@ sliderRegularizerValue = get(hObject,'Value');
 set(handles.etRegularizer,'String',num2str(sliderRegularizerValue));
 handles.regularizer = sliderRegularizerValue;
 guidata(hObject, handles); 
+end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -210,22 +221,26 @@ function sliderRegularizer_CreateFcn(hObject, eventdata, handles)
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
+end
 
 
 % --- Executes on button press in btnSaveAnnotation.
 function btnSaveAnnotation_Callback(hObject, eventdata, handles)
 anno = handles.superPixels;
 save([handles.annoDir '/'  handles.imgId '.mat'], 'anno' );
+end
 
 
 % --- Executes on button press in btnCompute.
 function btnCompute_Callback(hObject, eventdata, handles)
+end
 
 
 
 function etImagePath_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of etImagePath as text
 %        str2double(get(hObject,'String')) returns contents of etImagePath as a double
+end
 
 
 
@@ -236,6 +251,7 @@ function etImagePath_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+end
 
 
 
@@ -243,6 +259,7 @@ end
 function etAnnotationsPath_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of etAnnotationsPath as text
 %        str2double(get(hObject,'String')) returns contents of etAnnotationsPath as a double
+end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -252,6 +269,7 @@ function etAnnotationsPath_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+end
 
 
 
@@ -259,6 +277,7 @@ end
 function btnImgPath_Callback(hObject, eventdata, handles)
 handles.imgDir = uigetdir;
 set(handles.etImagePath,'String',handles.imgDir);
+end
 
 
 
@@ -266,6 +285,7 @@ set(handles.etImagePath,'String',handles.imgDir);
 function btnAnnPath_Callback(hObject, eventdata, handles)
 handles.annoDir = uigetdir;
 set(handles.etAnnotationsPath,'String',handles.annoDir);
+end
 
 
 % --- Executes on button press in btnLoadDatabase.
@@ -285,12 +305,14 @@ if (exist(handles.filelistFile,'file') && exist(handles.annoDir,'dir') && exist(
 else
     set(handles.stStatusDatabase,'String','Could not load database');
 end
+end
 
 
 
 function etFilelist_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of etFilelist as text
 %        str2double(get(hObject,'String')) returns contents of etFilelist as a double
+end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -300,6 +322,7 @@ function etFilelist_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+end
 
 
 % --- Executes on button press in btnLoadImgFilelist.
@@ -307,6 +330,7 @@ function btnLoadImgFilelist_Callback(hObject, eventdata, handles)
 filelistFile = uigetfile;
 set(handles.etFilelist,'String',filelistFile);
 handles.filelistFile = filelistFile;
+end
 
 
 
@@ -315,12 +339,14 @@ function TableFilelist_CellSelectionCallback(hObject, eventdata, handles)
 handles.imgIdx = eventdata.Indices(1);
 guidata(hObject, handles);
 updateImg(handles.imgIdx,hObject,handles)
+end
 
 
  
 % --- Executes on button press in btnComputeSegments.
 function btnComputeSegments_Callback(hObject, eventdata, handles)
     computeSegments(hObject,eventdata,handles)
+end
 
 
 % --- Executes on button press in btnDrawPolygon.
@@ -355,6 +381,8 @@ else
     set(handles.stStatus,'String',msg);
 end
 
+end
+
 function drawOverlay(hObject,handles)
 % Plot new Overlay
 fullMask = im2bw(handles.superPixels.labelImg); % TODO: Check if image to bw is the right function here
@@ -367,9 +395,8 @@ alphaMask = double(fullMask)*0.7;
 set(handles.myCanvas,'AlphaData',alphaMask);   
 hold off
 % guidata(handles.myCanvas, handles); 
-guidata(hObject, handles); 
-
-
+guidata(hObject, handles);
+end
 
 function computeSegments(hObject,eventdata,handles)
 imgIdx = handles.imgIdx;
@@ -397,9 +424,8 @@ if exist(fullImgPath,'file')
     guidata(hObject, handles);  
 else
     disp('No img found');
-
 end
-
+end
 
 function updateImg(imgIdx,hObject,handles)
 % if (~handles.isSaved) % Check if previous modifications have been saved
@@ -441,7 +467,41 @@ elseif exist(fullImgPath,'file')
 else
     disp('No img found');
 end
-  
+
+end
+
+% TODO Test this function
+function drawPredictions(imgIdx,hObject,handles)
+
+handles.imgIdx = imgIdx;
+handles.imgName = handles.filelist{imgIdx};
+[~, handles.imgId, ~] = fileparts(handles.imgName);
+
+set(handles.stImgName,'String',handles.imgId);
+fullImgPath = [handles.imgDir '/'  handles.imgName];
+fullInferencePath = [handles.inferenceDir '/'  handles.imgId '.mat'];
+
+callPythonInferenceScript(fullImgPath, fullInferencePath)
+
+if exist(fullInferencePath, 'file')
+      struc = load(fullInferencePath);
+      inferenceLabels = struc.labels;
+      fullMask = im2bw(int16(inferenceLabels));
+      hold on
+      overlay_final = ind2rgb(inferenceLabels, handles.colors);
+      overlay_final = uint8(overlay_final);
+      handles.myCanvas = imshow(overlay_final);
+      alphaMask = double(fullMask)*0.7;
+      set(handles.myCanvas, 'AlphaData', alphaMask);   
+      hold off
+      guidata(hObject, handles);
+else
+    disp('Something went wrong during inference');
+end
+
+end
+% TODO insert a button to call this function from the
+% interface
 
 
 % --- Executes on button press in btnSelectSuperpixels.
@@ -458,9 +518,7 @@ else
     set(handles.stStatus,'String',msg);
 end
 
-
-
-
+end
 
 function position_and_button(src,eventdata,hObject)
 Position = get( ancestor(src,'axes'), 'CurrentPoint' );
@@ -519,12 +577,10 @@ if ~isempty(Position)
 else 
     msg = {'Point is empty' 'try again'};
     set(handles.stStatus,'String',msg);
-
-
 end
 
-   
-   
+end
+      
 % function superPixelId = paintSuperPixel(Position,label,hObject,handles)
 % 
 % Position = int32(Position);
@@ -558,16 +614,12 @@ end
 % 
 % end
    
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+% --- Executes on button press in pushbutton14.
+% hObject    handle to pushbutton14 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function pushbutton14_Callback(hObject, eventdata, handles)
+imgIdx = handles.imgIdx;
+drawPredictions(imgIdx,hObject,handles)
+end
+
