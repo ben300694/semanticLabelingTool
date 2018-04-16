@@ -22,7 +22,7 @@ function varargout = semanticLabelingTool(varargin)
 
 % Edit the above text to modify the response to help semanticLabelingTool
 
-% Last Modified by GUIDE v2.5 16-Apr-2018 11:41:20
+% Last Modified by GUIDE v2.5 16-Apr-2018 18:48:45
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -175,6 +175,7 @@ if imgIdx < handles.numImgs
     updateImg(imgIdx,hObject,handles)
     
 end
+
 end
 
 
@@ -237,11 +238,6 @@ save([handles.annoDir '/'  handles.imgId '.mat'], 'anno' );
 end
 
 
-% --- Executes on button press in btnCompute.
-function btnCompute_Callback(hObject, eventdata, handles)
-end
-
-
 
 function etImagePath_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of etImagePath as text
@@ -281,16 +277,18 @@ end
 
 % --- Executes on button press in btnImgPath.
 function btnImgPath_Callback(hObject, eventdata, handles)
-handles.imgDir = uigetdir;
+handles.imgDir = uigetdir(handles.imgDir);
 set(handles.etImagePath, 'String', handles.imgDir);
+guidata(hObject, handles); 
 end
 
 
 
 % --- Executes on button press in btnAnnPath.
 function btnAnnPath_Callback(hObject, eventdata, handles)
-handles.annoDir = uigetdir;
+handles.annoDir = uigetdir(handles.annoDir);
 set(handles.etAnnotationsPath,'String',handles.annoDir);
+guidata(hObject, handles); 
 end
 
 
@@ -337,12 +335,11 @@ end
 
 % --- Executes on button press in btnLoadImgFilelist.
 function btnLoadImgFilelist_Callback(hObject, eventdata, handles)
-filelistFile = uigetfile;
+filelistFile = uigetfile(handles.filelistFile);
 set(handles.etFilelist,'String',filelistFile);
 handles.filelistFile = filelistFile;
+guidata(hObject, handles); 
 end
-
-
 
 % --- Executes when selected cell(s) is changed in TableFilelist.
 function TableFilelist_CellSelectionCallback(hObject, eventdata, handles)
@@ -350,7 +347,6 @@ handles.imgIdx = eventdata.Indices(1);
 guidata(hObject, handles);
 updateImg(handles.imgIdx,hObject,handles)
 end
-
 
  
 % --- Executes on button press in btnComputeSegments.
@@ -393,21 +389,6 @@ end
 
 end
 
-function drawOverlay(hObject,handles)
-% Plot new Overlay
-fullMask = im2bw(handles.superPixels.labelImg); % TODO: Check if image to bw is the right function here
-handles.myCanvas = imshow(handles.superPixels.oversegImage);
-hold on
-overlay_final = ind2rgb(handles.superPixels.labelImg,handles.colors);
-overlay_final = uint8(overlay_final);
-handles.myCanvas = imshow(overlay_final);
-alphaMask = double(fullMask)*0.7;
-set(handles.myCanvas,'AlphaData',alphaMask);   
-hold off
-% guidata(handles.myCanvas, handles); 
-guidata(hObject, handles);
-end
-
 function computeSegments(hObject,eventdata,handles)
 imgIdx = handles.imgIdx;
 handles.imgName = handles.filelist{imgIdx};
@@ -437,51 +418,9 @@ else
 end
 end
 
-function updateImg(imgIdx,hObject,handles)
-% if (~handles.isSaved) % Check if previous modifications have been saved
-% %    selection = questdlg('Save new Annotations?',...
-% %                         'Save new Annotations?',...
-% %                         'Yes','No','Yes');
-% 
-% %    switch selection,
-% %       case 'Yes',
-% %          %...
-% %       case 'No'
-% %          %...
-% %    end
-% end
-
-handles.imgIdx = imgIdx;
-handles.imgName = handles.filelist{imgIdx};
-[~, handles.imgId,~] = fileparts(handles.imgName);
-
-set(handles.stImgName,'String',handles.imgId);
-fullImgPath = [handles.imgDir '/'  handles.imgName];
-fullAnnoPath = [handles.annoDir '/'  handles.imgId '.mat'];
-
-if exist(fullAnnoPath,'file')
-    a = load(fullAnnoPath,'anno');
-    anno = a.anno;
-    handles.superPixels = anno;
-    handles.readyToLabel = true;
-    guidata(hObject, handles);
-    drawOverlay(hObject,handles)
-    
-elseif exist(fullImgPath,'file')
-    handles.img = imread(fullImgPath);
-    handles.myCanvas = imshow(handles.img);
-    handles.readyToLabel = false;
-    msg = {'No annotation found,' 'please compute segments'};
-    set(handles.stStatus,'String',msg);
-    guidata(hObject, handles);
-else
-    disp('No img found');
-end
-
-end
 
 % TODO Test this function
-function drawPredictions(imgIdx,hObject,handles)
+function drawPredictions(imgIdx, hObject, handles)
 
 handles.imgIdx = imgIdx;
 handles.imgName = handles.filelist{imgIdx};
@@ -491,7 +430,7 @@ set(handles.stImgName,'String',handles.imgId);
 fullImgPath = [handles.imgDir '/'  handles.imgName];
 fullInferencePath = [handles.inferenceDir '/'  handles.imgId '.mat'];
 
-callPythonInferenceScript(fullImgPath, fullInferencePath)
+callPythonInferenceScript(fullImgPath, fullInferencePath, handles.ckptFile)
 
 if exist(fullInferencePath, 'file')
       struc = load(fullInferencePath);
@@ -664,8 +603,11 @@ function btnCkptPath_Callback(hObject, eventdata, handles)
 % hObject    handle to btnCkptPath (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.ckptFile = uigetfile;
+[file,path] = uigetfile('*.ckpt');
+handles.ckptFile = fullfile(path,file);
 set(handles.etCkptFile, 'String', handles.ckptFile);
+
+guidata(hObject, handles); 
 end
 
 
