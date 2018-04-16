@@ -22,7 +22,7 @@ function varargout = semanticLabelingTool(varargin)
 
 % Edit the above text to modify the response to help semanticLabelingTool
 
-% Last Modified by GUIDE v2.5 13-Apr-2018 17:52:48
+% Last Modified by GUIDE v2.5 16-Apr-2018 11:41:20
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -65,6 +65,7 @@ handles.filelistFile = '/media/data/bruppik/deeplab_resnet_test_dataset/filelist
 handles.annoDir = '/media/data/bruppik/deeplab_resnet_test_dataset/annotations';
 handles.inferenceDir = '/media/data/bruppik/deeplab_resnet_test_dataset/inference';
 handles.imgDir = '/media/data/bruppik/deeplab_resnet_test_dataset/images';
+handles.ckptFile = '/media/data/bruppik/deeplab_resnet_ckpt/deeplab_resnet.ckpt';
 
 handles.imgName = '';
 handles.imgId = '';
@@ -124,6 +125,11 @@ indName = get(get(handles.Labels ,'SelectedObject'),'String');
 ind = find(ismember(handles.colorNames,indName)); % Get ind corresponding to color / label
 handles.selectedLabel = ind;
 
+% Update the text in the edit textboxes
+set(handles.etImagePath, 'String', handles.imgDir);
+set(handles.etAnnotationsPath, 'String', handles.annoDir);
+set(handles.etFilelist, 'String', handles.filelistFile);
+set(handles.etCkptFile, 'String', handles.ckptFile);
 
 % Update handles structure
 guidata(hObject, handles);
@@ -276,7 +282,7 @@ end
 % --- Executes on button press in btnImgPath.
 function btnImgPath_Callback(hObject, eventdata, handles)
 handles.imgDir = uigetdir;
-set(handles.etImagePath,'String',handles.imgDir);
+set(handles.etImagePath, 'String', handles.imgDir);
 end
 
 
@@ -302,6 +308,10 @@ if (exist(handles.filelistFile,'file') && exist(handles.annoDir,'dir') && exist(
     
     set(handles.TableFilelist,'Data',filelist);
     set(handles.TableFilelist,'ColumnWidth',{200});
+    
+    set(handles.etImagePath, 'String', handles.imgDir);
+    set(handles.etAnnotationsPath, 'String', handles.annoDir);
+    set(handles.etFilelist, 'String', handles.filelistFile);
 else
     set(handles.stStatusDatabase,'String','Could not load database');
 end
@@ -614,12 +624,54 @@ end
 % 
 % end
    
-% --- Executes on button press in pushbutton14.
-% hObject    handle to pushbutton14 (see GCBO)
+% --- Executes on button press in btnCallDeeplab.
+% hObject    handle to btnCallDeeplab (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-function pushbutton14_Callback(hObject, eventdata, handles)
+function btnCallDeeplab_Callback(hObject, eventdata, handles)
 imgIdx = handles.imgIdx;
 drawPredictions(imgIdx,hObject,handles)
 end
 
+
+
+function etCkptFile_Callback(hObject, eventdata, handles)
+% hObject    handle to etCkptFile (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of etCkptFile as text
+%        str2double(get(hObject,'String')) returns contents of etCkptFile as a double
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function etCkptFile_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to etCkptFile (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+end
+
+
+% --- Executes on button press in btnCkptPath.
+function btnCkptPath_Callback(hObject, eventdata, handles)
+% hObject    handle to btnCkptPath (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.ckptFile = uigetfile;
+set(handles.etCkptFile, 'String', handles.ckptFile);
+end
+
+
+% --- Executes on button press in pushbutton16.
+function pushbutton16_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton16 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+end
