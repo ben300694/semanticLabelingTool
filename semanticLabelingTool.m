@@ -22,7 +22,7 @@ function varargout = semanticLabelingTool(varargin)
 
 % Edit the above text to modify the response to help semanticLabelingTool
 
-% Last Modified by GUIDE v2.5 16-Apr-2018 18:48:45
+% Last Modified by GUIDE v2.5 18-Apr-2018 15:12:51
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -45,7 +45,6 @@ end
 end
 % End initialization code - DO NOT EDIT
 
-
 % --- Executes just before semanticLabelingTool is made visible.
 function semanticLabelingTool_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
@@ -54,6 +53,10 @@ function semanticLabelingTool_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to semanticLabelingTool (see VARARGIN)
 clc;
+
+
+folder = fileparts(which(mfilename)); 
+addpath(genpath(folder));
 
 % Choose default command line output for semanticLabelingTool
 handles.output = hObject;
@@ -419,40 +422,6 @@ end
 end
 
 
-% TODO Test this function
-function drawPredictions(imgIdx, hObject, handles)
-
-handles.imgIdx = imgIdx;
-handles.imgName = handles.filelist{imgIdx};
-[~, handles.imgId, ~] = fileparts(handles.imgName);
-
-set(handles.stImgName,'String',handles.imgId);
-fullImgPath = [handles.imgDir '/'  handles.imgName];
-fullInferencePath = [handles.inferenceDir '/'  handles.imgId '.mat'];
-
-callPythonInferenceScript(fullImgPath, fullInferencePath, handles.ckptFile)
-
-if exist(fullInferencePath, 'file')
-      struc = load(fullInferencePath);
-      inferenceLabels = struc.labels;
-      fullMask = im2bw(int16(inferenceLabels));
-      hold on
-      overlay_final = ind2rgb(inferenceLabels, handles.colors);
-      overlay_final = uint8(overlay_final);
-      handles.myCanvas = imshow(overlay_final);
-      alphaMask = double(fullMask)*0.7;
-      set(handles.myCanvas, 'AlphaData', alphaMask);   
-      hold off
-      guidata(hObject, handles);
-else
-    disp('Something went wrong during inference');
-end
-
-end
-% TODO insert a button to call this function from the
-% interface
-
-
 % --- Executes on button press in btnSelectSuperpixels.
 function btnSelectSuperpixels_Callback(hObject, eventdata, handles)
 % Select an arbitrary number of points
@@ -569,7 +538,8 @@ end
 % handles    structure with handles and user data (see GUIDATA)
 function btnCallDeeplab_Callback(hObject, eventdata, handles)
 imgIdx = handles.imgIdx;
-drawPredictions(imgIdx,hObject,handles)
+saveInference(imgIdx, hObject, handles)
+drawInference(imgIdx, hObject, handles);
 end
 
 
@@ -611,9 +581,12 @@ guidata(hObject, handles);
 end
 
 
-% --- Executes on button press in pushbutton16.
-function pushbutton16_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton16 (see GCBO)
+% --- Executes on button press in loadInference.
+function loadInference_Callback(hObject, eventdata, handles)
+% hObject    handle to loadInference (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+drawInference(handles.imgIdx, hObject, handles);
+
 end
