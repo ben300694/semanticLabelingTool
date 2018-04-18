@@ -22,7 +22,7 @@ function varargout = semanticLabelingTool(varargin)
 
 % Edit the above text to modify the response to help semanticLabelingTool
 
-% Last Modified by GUIDE v2.5 18-Apr-2018 15:12:51
+% Last Modified by GUIDE v2.5 18-Apr-2018 19:42:30
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -82,6 +82,8 @@ handles.superPixels = [];
 handles.readyToLabel = false;
 handles.isSaved = false;
 handles.myCanvas = [];
+
+handles.useCRF = true;
 
 % handles.colors = [  255 255 255;...% Background     
 %                     128 64 128 ;...% Road           
@@ -531,18 +533,6 @@ end
 %    
 % 
 % end
-   
-% --- Executes on button press in btnCallDeeplab.
-% hObject    handle to btnCallDeeplab (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-function btnCallDeeplab_Callback(hObject, eventdata, handles)
-imgIdx = handles.imgIdx;
-saveInference(imgIdx, hObject, handles)
-drawInference(imgIdx, hObject, handles);
-end
-
-
 
 function etCkptFile_Callback(hObject, eventdata, handles)
 % hObject    handle to etCkptFile (see GCBO)
@@ -581,12 +571,48 @@ guidata(hObject, handles);
 end
 
 
+% --- Executes on button press in btnCallDeeplab.
+% hObject    handle to btnCallDeeplab (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function btnCallDeeplab_Callback(hObject, eventdata, handles)
+
+imgIdx = handles.imgIdx;
+saveInference(imgIdx, hObject, handles)
+% drawInference(imgIdx, hObject, handles, false);
+
+end
+
+% --- Executes on button press in checkboxCRF.
+function checkboxCRF_Callback(hObject, eventdata, handles)
+% hObject    handle to checkboxCRF (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkboxCRF
+
+handles.useCRF = get(hObject,'Value');
+
+guidata(hObject, handles);
+
+end
+
 % --- Executes on button press in loadInference.
 function loadInference_Callback(hObject, eventdata, handles)
 % hObject    handle to loadInference (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-drawInference(handles.imgIdx, hObject, handles);
+drawInference(handles.imgIdx, hObject, handles, false);
+
+end
+
+% --- Executes on button press in loadInferenceCRF.
+function loadInferenceCRF_Callback(hObject, eventdata, handles)
+% hObject    handle to loadInferenceCRF (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+drawInference(handles.imgIdx, hObject, handles, true);
 
 end

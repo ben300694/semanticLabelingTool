@@ -9,7 +9,7 @@ fullImgPath = [handles.imgDir '/'  handles.imgName];
 fullInferencePath = [handles.inferenceDir '/'  handles.imgId '.mat'];
 
 % The python script calls a forward pass through the Deeplab Resnet
-callPythonInferenceScript(fullImgPath, fullInferencePath, handles.ckptFile)
+callPythonInferenceScript(fullImgPath, fullInferencePath, handles.ckptFile, handles.useCRF)
 
 guidata(hObject, handles);
 

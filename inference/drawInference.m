@@ -1,4 +1,4 @@
-function drawInference(imgIdx, hObject, handles)
+function drawInference(imgIdx, hObject, handles, withCRF)
 
 % Reset the Canvas to just show the original image
 handles.myCanvas = imshow(handles.img);
@@ -7,7 +7,12 @@ fullInferencePath = [handles.inferenceDir '/'  handles.imgId '.mat'];
 
 if exist(fullInferencePath, 'file')
       struc = load(fullInferencePath);
-      inferenceLabels = struc.labels;
+      
+      if (withCRF == true);
+            inferenceLabels = struc.labels_crf;
+      else
+            inferenceLabels = struc.labels;
+      end
       fullMask = im2bw(int16(inferenceLabels));
       
       hold on
