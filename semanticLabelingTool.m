@@ -22,7 +22,7 @@ function varargout = semanticLabelingTool(varargin)
 
 % Edit the above text to modify the response to help semanticLabelingTool
 
-% Last Modified by GUIDE v2.5 18-Apr-2018 19:42:30
+% Last Modified by GUIDE v2.5 20-Apr-2018 16:19:23
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -154,35 +154,36 @@ function varargout = semanticLabelingTool_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 end
 
+%% Callbacks for Iterate through images
 
 % --- Executes on button press in btnPrevious.
 function btnPrevious_Callback(hObject, eventdata, handles)
-% Load previous img
+% Load previous imgage
 imgIdx = handles.imgIdx;
-if imgIdx > 1
-   
+if imgIdx > 1 
     imgIdx = imgIdx - 1;
-    updateImg(imgIdx,hObject,handles)
-    
+    updateImg(imgIdx,hObject,handles)    
 end
 end
-
-
 
 % --- Executes on button press in btnNext.
 function btnNext_Callback(hObject, eventdata, handles)
-% Next image
+% Load next image
 imgIdx = handles.imgIdx;
 if imgIdx < handles.numImgs
-   
     imgIdx = imgIdx + 1;
-
     updateImg(imgIdx,hObject,handles)
-    
+end
 end
 
+% --- Executes on button press in btnReload.
+function btnReload_Callback(hObject, eventdata, handles)
+% Reload the image in the canvas
+handles.myCanvas = imshow(handles.img);
+guidata(hObject, handles)
 end
 
+%%
 
 % --- Executes on button press in btnLoadAnnotation.
 function btnLoadAnnotation_Callback(hObject, eventdata, handles)
