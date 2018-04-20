@@ -16,12 +16,12 @@ Prerequisites:
 
 .
 +-- annotations
++-- annotations_PNG
 +-- images
 |   +-- img00001.png
 |   +-- img00002.png
 |   +-- ...
 |
-+-- annotations
 +-- inference
 +-- filelist.txt
 +-- train.txt

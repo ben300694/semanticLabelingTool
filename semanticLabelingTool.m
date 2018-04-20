@@ -22,7 +22,7 @@ function varargout = semanticLabelingTool(varargin)
 
 % Edit the above text to modify the response to help semanticLabelingTool
 
-% Last Modified by GUIDE v2.5 20-Apr-2018 16:19:23
+% Last Modified by GUIDE v2.5 20-Apr-2018 19:41:05
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -64,10 +64,14 @@ handles.output = hObject;
 % handles.filelistFile = '/home/garbade/datasets/goPro/filelist_1280x720.txt';
 % handles.annoDir = '/home/garbade/datasets/goPro/annotations';
 % handles.imgDir = '/home/garbade/datasets/goPro/images_1280x720';
-handles.filelistFile = '/media/data/bruppik/deeplab_resnet_test_dataset/filelist.txt';
-handles.annoDir = '/media/data/bruppik/deeplab_resnet_test_dataset/annotations';
-handles.inferenceDir = '/media/data/bruppik/deeplab_resnet_test_dataset/inference';
 handles.imgDir = '/media/data/bruppik/deeplab_resnet_test_dataset/images';
+handles.filelistFile = '/media/data/bruppik/deeplab_resnet_test_dataset/filelist.txt';
+handles.trainFile = '/media/data/bruppik/deeplab_resnet_test_dataset/train.txt';
+
+handles.annoDir = '/media/data/bruppik/deeplab_resnet_test_dataset/annotations';
+handles.annoPNGDir = '/media/data/bruppik/deeplab_resnet_test_dataset/annotations_PNG';
+
+handles.inferenceDir = '/media/data/bruppik/deeplab_resnet_test_dataset/inference';
 handles.ckptFile = '/media/data/bruppik/deeplab_resnet_ckpt/deeplab_resnet.ckpt';
 
 handles.imgName = '';
@@ -185,17 +189,6 @@ end
 
 %%
 
-% --- Executes on button press in btnLoadAnnotation.
-function btnLoadAnnotation_Callback(hObject, eventdata, handles)
-% Check if Annotation exists
-% If yes load it
-% Else compute superPixels and save them
-% Store superPixels along with Annotations
-
-updateImg(handles.imgIdx,hObject,handles)
-end
-
-
 % --- Executes on slider movement.
 function sliderRegionSize_Callback(hObject, eventdata, handles)
 
@@ -236,6 +229,7 @@ if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColo
 end
 end
 
+%% Load and Save Annotations
 
 % --- Executes on button press in btnSaveAnnotation.
 function btnSaveAnnotation_Callback(hObject, eventdata, handles)
@@ -243,14 +237,29 @@ anno = handles.superPixels;
 save([handles.annoDir '/'  handles.imgId '.mat'], 'anno' );
 end
 
+% --- Executes on button press in btnLoadAnnotation.
+function btnLoadAnnotation_Callback(hObject, eventdata, handles)
+% Check if Annotation exists
+% If yes load it
+% Else compute superPixels and save them
+% Store superPixels along with Annotations
+updateImg(handles.imgIdx,hObject,handles)
+end
 
+% --- Executes on button press in btnSaveAnnotationAsPNG.
+function btnSaveAnnotationAsPNG_Callback(hObject, eventdata, handles)
+% hObject    handle to btnSaveAnnotationAsPNG (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+annotationToPNG(handles.imgIdx, hObject, handles)
+end
+
+%% Set paths for database
 
 function etImagePath_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of etImagePath as text
 %        str2double(get(hObject,'String')) returns contents of etImagePath as a double
 end
-
-
 
 % --- Executes during object creation, after setting all properties.
 function etImagePath_CreateFcn(hObject, eventdata, handles)
@@ -260,9 +269,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 end
-
-
-
 
 function etAnnotationsPath_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of etAnnotationsPath as text
@@ -279,8 +285,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 end
 
-
-
 % --- Executes on button press in btnImgPath.
 function btnImgPath_Callback(hObject, eventdata, handles)
 handles.imgDir = uigetdir(handles.imgDir);
@@ -288,15 +292,12 @@ set(handles.etImagePath, 'String', handles.imgDir);
 guidata(hObject, handles); 
 end
 
-
-
 % --- Executes on button press in btnAnnPath.
 function btnAnnPath_Callback(hObject, eventdata, handles)
 handles.annoDir = uigetdir(handles.annoDir);
 set(handles.etAnnotationsPath,'String',handles.annoDir);
 guidata(hObject, handles); 
 end
-
 
 % --- Executes on button press in btnLoadDatabase.
 function btnLoadDatabase_Callback(hObject, eventdata, handles)
@@ -354,6 +355,7 @@ guidata(hObject, handles);
 updateImg(handles.imgIdx,hObject,handles)
 end
 
+%% Superpixels and Annotation tools
  
 % --- Executes on button press in btnComputeSegments.
 function btnComputeSegments_Callback(hObject, eventdata, handles)
@@ -571,6 +573,7 @@ set(handles.etCkptFile, 'String', handles.ckptFile);
 guidata(hObject, handles); 
 end
 
+%% Inference
 
 % --- Executes on button press in btnCallDeeplab.
 % hObject    handle to btnCallDeeplab (see GCBO)
@@ -598,9 +601,9 @@ guidata(hObject, handles);
 
 end
 
-% --- Executes on button press in loadInference.
-function loadInference_Callback(hObject, eventdata, handles)
-% hObject    handle to loadInference (see GCBO)
+% --- Executes on button press in btnLoadInference.
+function btnLoadInference_Callback(hObject, eventdata, handles)
+% hObject    handle to btnLoadInference (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -608,9 +611,9 @@ drawInference(handles.imgIdx, hObject, handles, false);
 
 end
 
-% --- Executes on button press in loadInferenceCRF.
-function loadInferenceCRF_Callback(hObject, eventdata, handles)
-% hObject    handle to loadInferenceCRF (see GCBO)
+% --- Executes on button press in btnLoadInferenceCRF.
+function btnLoadInferenceCRF_Callback(hObject, eventdata, handles)
+% hObject    handle to btnLoadInferenceCRF (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
