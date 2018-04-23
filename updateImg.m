@@ -20,7 +20,8 @@ set(handles.stImgName,'String',handles.imgId);
 fullImgPath = [handles.imgDir '/'  handles.imgName];
 fullAnnoPath = [handles.annoDir '/'  handles.imgId '.mat'];
 
-if exist(fullAnnoPath,'file')
+if exist(fullAnnoPath,'file') && exist(fullImgPath,'file')
+    handles.img = imread(fullImgPath);
     a = load(fullAnnoPath,'anno');
     anno = a.anno;
     handles.superPixels = anno;
@@ -36,7 +37,9 @@ elseif exist(fullImgPath,'file')
     set(handles.stStatus,'String',msg);
     guidata(hObject, handles);
 else
-    disp('No img found');
+    disp('No image found');
 end
+
+guidata(hObject, handles);
 
 end

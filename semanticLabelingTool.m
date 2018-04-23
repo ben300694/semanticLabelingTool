@@ -166,7 +166,7 @@ function btnPrevious_Callback(hObject, eventdata, handles)
 imgIdx = handles.imgIdx;
 if imgIdx > 1 
     imgIdx = imgIdx - 1;
-    updateImg(imgIdx,hObject,handles)    
+    updateImg(imgIdx, hObject, handles)    
 end
 end
 
@@ -176,7 +176,7 @@ function btnNext_Callback(hObject, eventdata, handles)
 imgIdx = handles.imgIdx;
 if imgIdx < handles.numImgs
     imgIdx = imgIdx + 1;
-    updateImg(imgIdx,hObject,handles)
+    updateImg(imgIdx, hObject, handles)
 end
 end
 
@@ -544,6 +544,9 @@ function etCkptFile_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of etCkptFile as text
 %        str2double(get(hObject,'String')) returns contents of etCkptFile as a double
+handles.ckptFile = get(hObject, 'String');
+
+guidata(hObject, handles); 
 end
 
 
