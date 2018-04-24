@@ -72,7 +72,7 @@ handles.annoDir = '/media/data/bruppik/deeplab_resnet_test_dataset/annotations';
 handles.annoPNGDir = '/media/data/bruppik/deeplab_resnet_test_dataset/annotations_PNG';
 
 handles.inferenceDir = '/media/data/bruppik/deeplab_resnet_test_dataset/inference';
-handles.snapshotDir = '/media/data/bruppik/deeplab_resnet_test_dataset/snapshots_finetune';
+handles.ckptDir = 
 handles.ckptFile = '/media/data/bruppik/deeplab_resnet_ckpt/deeplab_resnet.ckpt';
 
 handles.imgName = '';
@@ -570,7 +570,7 @@ function btnCkptPath_Callback(hObject, eventdata, handles)
 % hObject    handle to btnCkptPath (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-[file,path] = uigetfile('*.*', 'Select a file with network weights', handles.snapshotDir);
+[file,path] = uigetfile();
 handles.ckptFile = fullfile(path,file);
 set(handles.etCkptFile, 'String', handles.ckptFile);
 

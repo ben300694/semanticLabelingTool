@@ -12,15 +12,15 @@ fullAnnoPNGPath = [handles.annoPNGDir '/' 'anno_' handles.imgId '.png'];
 if exist(fullAnnoPath,'file')
     a = load(fullAnnoPath,'anno');
     anno = a.anno;
-    % Save labels as uint16 PNG
-    imwrite(uint16(anno.labelImg), fullAnnoPNGPath);
+    % Save labels as uint8 PNG
+    imwrite(uint8(anno.labelImg), fullAnnoPNGPath);
     disp(['Annotation in PNG format written to ', fullAnnoPNGPath]);
     
     % Add new annotation to list of available training images
     fileID = fopen(handles.trainFile, 'a'); % Open file with permission to append
-    fprintf(fileID, '%s', fullImgPath);
+    fprintf(fileID, '%s', ['/images', '/', handles.imgName]);
     fprintf(fileID, ' ');
-    fprintf(fileID, '%s\n', fullAnnoPNGPath);
+    fprintf(fileID, '%s\n', ['/annotations_PNG', '/', 'anno_', handles.imgId, '.png']);
     fclose(fileID);
 
     guidata(hObject, handles);
