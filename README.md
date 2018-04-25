@@ -6,7 +6,7 @@ using [tensorflow-deeplab](https://github.com/DrSleep/tensorflow-deeplab-resnet)
 
 [Here](https://youtu.be/oycY0ZMMszI) is some demo video of the tool
 
-Prerequisites:
+## Prerequisites:
  - Download and extract [vl_feat library](http://www.vlfeat.org/) including the function to compute superpixels `vl_slic`
  - Add the all extracted folders to your Matlab path
  - Install tensorflow
@@ -16,31 +16,34 @@ Prerequisites:
 
 .
 +-- annotations
+|   +-- img00001.png
+|   +-- img00001.png
+|   +-- ...
+|
 +-- annotations_PNG
 +-- images
-|   +-- img00001.png
-|   +-- img00002.png
+|   +-- img00001.mat
+|   +-- img00002.mat
 |   +-- ...
 |
 +-- inference
++-- output
++-- snapshots_finetune
 +-- filelist.txt
 +-- train.txt
++-- val.txt
 
 ```
-
-
-
 
 You need the following Matlab functions:
  - regionprops
  - bwperim
 
 
-
-
-
-TODOs:
+## TODOs:
  - [x] Replace system [call to caffe-deeplab](https://github.com/mgarbade/semanticLabelingTool/blob/43cbde95bf7fbd802e0f25f773517d2a3956cb82/getSematicLabels.m#L1-L41) by some easier-to-install NN library, eg [tensorflow-deeplab](https://github.com/DrSleep/tensorflow-deeplab-resnet)
  - [x] Postprocessing of the inference with a CRF
- - [ ] Finetune Deeplab with the training data
+ - [x] Finetune Deeplab with the training data
+ - [ ] Find good metaparameters for finetuning the model
+ - [ ] See the class label when hovering over the image
  - [ ] Allow adding and removing classes in the interface
