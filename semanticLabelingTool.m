@@ -22,7 +22,7 @@ function varargout = semanticLabelingTool(varargin)
 
 % Edit the above text to modify the response to help semanticLabelingTool
 
-% Last Modified by GUIDE v2.5 20-Apr-2018 19:41:05
+% Last Modified by GUIDE v2.5 25-Apr-2018 19:08:34
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -504,6 +504,82 @@ else
 end
 
 end
+
+%% Tools for pixel info
+
+% --- Executes on button press in btnGetInfo.
+function btnGetInfo_Callback(hObject, eventdata, handles)
+% hObject    handle to btnGetInfo (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+h = handles.myCanvas;
+if ~isempty(h)
+    set(h, 'ButtonDownFcn', @(src,eventdata)printPixelLabel(src, eventdata, hObject));
+else
+    msg = {'myCanvas handle' 'is empty'};
+    set(handles.stStatus, 'String', msg);
+end
+
+end
+
+function printPixelLabel(src, eventdata, hObject)
+Position = get( ancestor(src,'axes'), 'CurrentPoint' );
+Button = get( ancestor(src,'figure'), 'SelectionType' );
+% hObject
+% src
+hfig = ancestor(src, 'figure'); % Get the handle to the figure
+handles = guidata(hfig); % Get the handles struct
+
+% hold on 
+Position = int32(Position);
+Point = Position(end,:);
+% plot(Point(1),Point(2),'r+');
+% hold off
+
+Position = int32(Position);
+
+if ~isempty(Position)
+
+    Point = Position(end,:); % Only take first point (not sure why output argument consists of 2 points)
+
+    spImg = handles.superPixels.superPixelImg;
+    superPixelId = spImg(Point(2),Point(1));
+    labelImg = handles.superPixels.labelImg;
+    overlayMask = (spImg == superPixelId);
+
+    labelImg(overlayMask) = handles.selectedLabel; % Colorize selected polygon
+    handles.superPixels.labelImg = labelImg; % Update the overlay
+    handles.isSaved = false; % Prompt user to save image
+
+%         guidata(src, handles) 
+%         drawOverlay(hObject,handles)
+
+%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    % Plot new Overlay
+    fullMask = im2bw(handles.superPixels.labelImg); % TODO: Check if image to bw is the right function here
+    set(src,'CData',handles.superPixels.oversegImage);
+    hold on
+    overlay_final = ind2rgb(handles.superPixels.labelImg,handles.colors);
+    overlay_final = uint8(overlay_final);
+    set(src,'CData',overlay_final);
+    alphaMask = double(fullMask)*0.7;
+    set(handles.myCanvas,'AlphaData',alphaMask);   
+    hold off
+    guidata(hObject, handles); 
+%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        
+        
+    msg = {'Please hit ''Save''' 'to store modifications'};
+    set(handles.stStatus,'String',msg);
+
+else 
+    msg = {'Point is empty' 'try again'};
+    set(handles.stStatus,'String',msg);
+end
+
+end
       
 % function superPixelId = paintSuperPixel(Position,label,hObject,handles)
 % 
@@ -537,6 +613,8 @@ end
 %    
 % 
 % end
+
+%% Annotations Paths
 
 function etCkptFile_Callback(hObject, eventdata, handles)
 % hObject    handle to etCkptFile (see GCBO)
