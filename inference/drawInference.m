@@ -18,13 +18,14 @@ if exist(fullInferencePath, 'file')
       else
             inferenceLabels = struc.labels;
       end
+      handles.currentlyShownLabels = inferenceLabels;
       fullMask = im2bw(int16(inferenceLabels));
       
       hold on
       overlay_final = ind2rgb(inferenceLabels, handles.colors);
       overlay_final = uint8(overlay_final);
       handles.myCanvas = imshow(overlay_final);
-      alphaMask = double(fullMask)*0.5;
+      alphaMask = double(fullMask)*handles.alphaValue;
       set(handles.myCanvas, 'AlphaData', alphaMask);   
       hold off
       
@@ -32,5 +33,7 @@ if exist(fullInferencePath, 'file')
 else
     disp('No Inference file found, generate it first!');
 end
+
+guidata(hObject, handles);
 
 end
