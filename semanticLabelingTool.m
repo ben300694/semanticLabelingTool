@@ -22,7 +22,7 @@ function varargout = semanticLabelingTool(varargin)
 
 % Edit the above text to modify the response to help semanticLabelingTool
 
-% Last Modified by GUIDE v2.5 27-Apr-2018 15:11:26
+% Last Modified by GUIDE v2.5 27-Apr-2018 16:38:44
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -228,30 +228,6 @@ if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColo
 end
 end
 
-%% Load and Save Annotations
-
-% --- Executes on button press in btnSaveAnnotation.
-function btnSaveAnnotation_Callback(hObject, eventdata, handles)
-anno = handles.superPixels;
-save([handles.annoDir '/'  handles.imgId '.mat'], 'anno' );
-end
-
-% --- Executes on button press in btnLoadAnnotation.
-function btnLoadAnnotation_Callback(hObject, eventdata, handles)
-% Check if Annotation exists
-% If yes load it
-% Else compute superPixels and save them
-% Store superPixels along with Annotations
-updateImg(handles.imgIdx,hObject,handles)
-end
-
-% --- Executes on button press in btnSaveAnnotationAsPNG.
-function btnSaveAnnotationAsPNG_Callback(hObject, eventdata, handles)
-% hObject    handle to btnSaveAnnotationAsPNG (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-annotationToPNG(handles.imgIdx, hObject, handles)
-end
 
 %% Set paths for database
 
@@ -350,7 +326,7 @@ end
 % --- Executes when selected cell(s) is changed in TableFilelist.
 function TableFilelist_CellSelectionCallback(hObject, eventdata, handles)
 handles.imgIdx = eventdata.Indices(1);
-guidata(hObject, handles);
+guidata(hObjecim2bwt, handles);
 updateImg(handles.imgIdx,hObject,handles)
 end
 
@@ -423,6 +399,7 @@ if exist(fullImgPath,'file')
 else
     disp('No img found');
 end
+
 end
 
 
@@ -434,15 +411,17 @@ function btnSelectSuperpixels_Callback(hObject, eventdata, handles)
 
 h = handles.myCanvas;
 if ~isempty(h)
-    set(h,'ButtonDownFcn',@(src,eventdata)position_and_button(src,eventdata,hObject));
+    set(h, 'ButtonDownFcn', @(src,eventdata)position_and_button(src,eventdata,hObject));
 else
     msg = {'myCanvas handle' 'is empty'};
     set(handles.stStatus,'String',msg);
 end
 
+
 end
 
-function position_and_button(src,eventdata,hObject)
+function position_and_button(src, eventdata, hObject)
+
 Position = get( ancestor(src,'axes'), 'CurrentPoint' );
 Button = get( ancestor(src,'figure'), 'SelectionType' );
 % hObject
@@ -463,7 +442,7 @@ Position = int32(Position);
 
 if ~isempty(Position)
 
-    Point = Position(end,:); % Only take first point ( not sure why output argument consists of 2 points)
+    Point = Position(end,:); % Only take first point (not sure why output argument consists of 2 points)
 
     spImg = handles.superPixels.superPixelImg;
     superPixelId = spImg(Point(2),Point(1));
@@ -474,32 +453,22 @@ if ~isempty(Position)
     handles.superPixels.labelImg = labelImg; % Update the overlay
     handles.isSaved = false; % Prompt user to save image
 
-%         guidata(src, handles) 
-%         drawOverlay(hObject,handles)
-
-%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
     % Plot new Overlay
-    fullMask = im2bw(handles.superPixels.labelImg); % TODO: Check if image to bw is the right function here
-    set(src,'CData',handles.superPixels.oversegImage);
-    hold on
-    overlay_final = ind2rgb(handles.superPixels.labelImg,handles.colors);
-    overlay_final = uint8(overlay_final);
-    set(src,'CData',overlay_final);
-    alphaMask = double(fullMask)*0.7;
-    set(handles.myCanvas,'AlphaData',alphaMask);   
-    hold off
-    guidata(hObject, handles); 
-%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        
+    handles = drawOverlay(hObject, handles);
+
+    % Have to set the ButtonDownFcn again because a plot
+    % clears the objects properties
+    set(handles.myCanvas, 'ButtonDownFcn', @(src,eventdata)position_and_button(src,eventdata,hObject));    
         
     msg = {'Please hit ''Save''' 'to store modifications'};
-    set(handles.stStatus,'String',msg);
+    set(handles.stStatus, 'String', msg);
 
 else 
     msg = {'Point is empty' 'try again'};
-    set(handles.stStatus,'String',msg);
+    set(handles.stStatus, 'String', msg);
 end
+
+guidata(hObject, handles)
 
 end
 
@@ -545,10 +514,16 @@ if ~isempty(Position)
     if ~isempty(handles.currentlyShownLabels)
         pixelLabel = handles.currentlyShownLabels(Point(2),Point(1));
     
+        if pixelLabel == 0
+            pixelLabelClass = 'undefined'
+        else
+            pixelLabelClass = handles.colorNames{pixelLabel}
+        end
+        
         msg = {['Label of pixel at point ', ...
                '(', int2str(Point(2)), ', ', int2str(Point(1)), ')', ...
                ' is ', int2str(pixelLabel)], ...
-               ['Class ', int2str(pixelLabel), ' is ', handles.colorNames{pixelLabel}]
+               ['Class ', int2str(pixelLabel), ' is ', pixelLabelClass]
                }
         set(handles.stInfoStatus,'String',msg);
     else
@@ -639,6 +614,33 @@ set(handles.etCkptFile, 'String', handles.ckptFile);
 guidata(hObject, handles); 
 end
 
+% %% Load and Save Annotations via Buttons
+% 
+% % --- Executes on button press in btnSaveAnnotation.
+% function btnSaveAnnotation_Callback(hObject, eventdata, handles)
+% anno = handles.superPixels;
+% save([handles.annoDir '/'  handles.imgId '.mat'], 'anno' );
+% end
+% 
+% % --- Executes on button press in btnLoadAnnotation.
+% function btnLoadAnnotation_Callback(hObject, eventdata, handles)
+% % Check if Annotation exists
+% % If yes load it
+% % Else compute superPixels and save them
+% % Store superPixels along with Annotations
+% updateImg(handles.imgIdx,hObject,handles)
+% loadAndDrawAnnotation(handles.imgIdx,hObject,handles)
+% end
+% 
+% % --- Executes on button press in btnSaveAnnotationAsPNG.
+% function btnSaveAnnotationAsPNG_Callback(hObject, eventdata, handles)
+% % hObject    handle to btnSaveAnnotationAsPNG (see GCBO)
+% % eventdata  reserved - to be defined in a future version of MATLAB
+% % handles    structure with handles and user data (see GUIDATA)
+% annotationToPNG(handles.imgIdx, hObject, handles)
+% end
+
+
 %% Inference
 
 % --- Executes on button press in btnCallDeeplab.
@@ -674,7 +676,7 @@ function btnReload_Callback(hObject, eventdata, handles)
 % Reload the image in the canvas
 handles.myCanvas = imshow(handles.img);
 handles.currentlyShownLabels = [];
-guidata(hObject, handles)
+guidata(hObject, handles);
 end
 
 % --- Executes on button press in btnLoadInference.
@@ -734,15 +736,15 @@ function menuAnnotation_Callback(hObject, eventdata, handles)
 % hObject    handle to menuAnnotation (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+guidata(hObject, handles);
 end
-
 
 % --------------------------------------------------------------------
 function menuLoadAnnotation_Callback(hObject, eventdata, handles)
 % hObject    handle to menuLoadAnnotation (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-updateImg(handles.imgIdx,hObject,handles)
+loadAndDrawAnnotation(handles.imgIdx, hObject, handles);
 end
 
 
@@ -752,7 +754,7 @@ function menuSaveAnnotation_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 anno = handles.superPixels;
-save([handles.annoDir '/'  handles.imgId '.mat'], 'anno' );
+save([handles.annoDir '/'  handles.imgId '.mat'], 'anno');
 end
 
 
@@ -761,5 +763,5 @@ function menuSaveAsPNG_Callback(hObject, eventdata, handles)
 % hObject    handle to menuSaveAsPNG (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-annotationToPNG(handles.imgIdx, hObject, handles)
+annotationToPNG(handles.imgIdx, hObject, handles);
 end
