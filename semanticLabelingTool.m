@@ -73,7 +73,7 @@ handles.annoPNGDir = '/media/data/bruppik/deeplab_resnet_test_dataset/annotation
 
 handles.inferenceDir = '/media/data/bruppik/deeplab_resnet_test_dataset/inference';
 handles.snapshotDir = '/media/data/bruppik/deeplab_resnet_test_dataset/snapshots_finetune';
-handles.ckptFile = '/media/data/bruppik/deeplab_resnet_ckpt/deeplab_resnet.ckpt';
+handles.ckptFile = '/media/data/bruppik/deeplab_resnet_test_dataset/snapshots_finetune/model_finetuned.ckpt-350';
 
 handles.imgName = '';
 handles.imgId = '';
@@ -171,7 +171,7 @@ function btnPrevious_Callback(hObject, eventdata, handles)
 imgIdx = handles.imgIdx;
 if imgIdx > 1 
     imgIdx = imgIdx - 1;
-    updateImg(imgIdx, hObject, handles)    
+    updateImg(imgIdx, hObject, handles);    
 end
 end
 
@@ -181,7 +181,7 @@ function btnNext_Callback(hObject, eventdata, handles)
 imgIdx = handles.imgIdx;
 if imgIdx < handles.numImgs
     imgIdx = imgIdx + 1;
-    updateImg(imgIdx, hObject, handles)
+    updateImg(imgIdx, hObject, handles);
 end
 end
 
@@ -284,7 +284,7 @@ if (exist(handles.filelistFile,'file') && exist(handles.annoDir,'dir') && exist(
     handles.numImgs = size(filelist,1);
     handles.imgIdx = 1;
     
-    updateImg(handles.imgIdx,hObject,handles)
+    updateImg(handles.imgIdx,hObject,handles);
     
     set(handles.TableFilelist,'Data',filelist);
     set(handles.TableFilelist,'ColumnWidth',{200});
@@ -326,8 +326,10 @@ end
 % --- Executes when selected cell(s) is changed in TableFilelist.
 function TableFilelist_CellSelectionCallback(hObject, eventdata, handles)
 handles.imgIdx = eventdata.Indices(1);
-guidata(hObjecim2bwt, handles);
-updateImg(handles.imgIdx,hObject,handles)
+disp(['handles.imgIdx changed to ', int2str(handles.imgIdx)])
+% disp(handles.filelist)
+handles = updateImg(handles.imgIdx,hObject,handles);
+guidata(hObject, handles);
 end
 
 %% Superpixels and Annotation tools
@@ -360,8 +362,7 @@ if (handles.readyToLabel);
     handles.superPixels.labelImg = labelImg; % Update the overlay
     handles.isSaved = false; % Prompt user to save image
     
-    guidata(hObject, handles); 
-    drawOverlay(hObject,handles)
+    handles = drawOverlay(hObject,handles);
     msg = {'Please hit ''Save''' 'to store modifications'};
     set(handles.stStatus,'String',msg);
     
@@ -369,6 +370,8 @@ else
     msg = {'Image not ready to' 'label yet. Compute' 'super pixels first'};
     set(handles.stStatus,'String',msg);
 end
+
+guidata(hObject, handles); 
 
 end
 
@@ -410,6 +413,7 @@ function btnSelectSuperpixels_Callback(hObject, eventdata, handles)
 % Paint superpixel with the color selected
 
 h = handles.myCanvas;
+disp(h);
 if ~isempty(h)
     set(h, 'ButtonDownFcn', @(src,eventdata)position_and_button(src,eventdata,hObject));
 else
@@ -456,8 +460,8 @@ if ~isempty(Position)
     % Plot new Overlay
     handles = drawOverlay(hObject, handles);
 
-    % Have to set the ButtonDownFcn again because a plot
-    % clears the objects properties
+    % Have to set the ButtonDownFcn again 
+    % because a plot clears the objects properties
     set(handles.myCanvas, 'ButtonDownFcn', @(src,eventdata)position_and_button(src,eventdata,hObject));    
         
     msg = {'Please hit ''Save''' 'to store modifications'};
@@ -736,7 +740,6 @@ function menuAnnotation_Callback(hObject, eventdata, handles)
 % hObject    handle to menuAnnotation (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-guidata(hObject, handles);
 end
 
 % --------------------------------------------------------------------
@@ -744,7 +747,8 @@ function menuLoadAnnotation_Callback(hObject, eventdata, handles)
 % hObject    handle to menuLoadAnnotation (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-loadAndDrawAnnotation(handles.imgIdx, hObject, handles);
+handles = loadAndDrawAnnotation(handles.imgIdx, hObject, handles);
+guidata(hObject, handles);
 end
 
 

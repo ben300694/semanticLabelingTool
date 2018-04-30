@@ -1,4 +1,4 @@
-function loadAndDrawAnnotation(imgIdx, hObject, handles)
+function handles = loadAndDrawAnnotation(imgIdx, hObject, handles)
 
 % Reset the Canvas to just show the original image
 handles.myCanvas = imshow(handles.img);
@@ -24,11 +24,13 @@ if exist(fullAnnoPath,'file') && exist(fullImgPath,'file')
     msg = {'Image loaded', 'Annotation loaded'};
     set(handles.stStatus, 'String', msg);
     
-    drawOverlay(hObject,handles);
+    handles = drawOverlay(hObject,handles);
 else
     msg = 'No annotation found';
     set(handles.stStatus, 'String', msg);
     disp(msg);
 end
+
+guidata(hObject, handles);
 
 end

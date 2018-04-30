@@ -1,4 +1,4 @@
-function drawInference(imgIdx, hObject, handles, withCRF)
+function handles = drawInference(imgIdx, hObject, handles, withCRF)
 
 % Reset the Canvas to just show the original image
 handles.myCanvas = imshow(handles.img);
@@ -30,7 +30,6 @@ if exist(fullInferencePath, 'file')
           set(handles.myCanvas, 'AlphaData', alphaMask);   
       hold off
       
-      guidata(hObject, handles);
 else
     disp('No Inference file found, generate it first!');
 end
