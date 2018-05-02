@@ -1,4 +1,8 @@
 function handles = drawOverlay(hObject,handles)
+
+% Save current zoom settings
+Limits = get(gca,{'xlim','ylim'});
+
 % Set labels to get correct pixel info
 handles.currentlyShownLabels = handles.superPixels.labelImg;
 
@@ -15,7 +19,8 @@ hold on
     set(handles.myCanvas, 'AlphaData', alphaMask);   
 hold off
 
-% guidata(handles.myCanvas, handles); 
-% guidata(hObject, handles);
+% Restore old zoom settings
+zoom reset
+set(gca, {'xlim','ylim'}, Limits)
 
 end

@@ -1,5 +1,8 @@
 function handles = drawInference(imgIdx, hObject, handles, withCRF)
 
+% Save current zoom settings
+Limits = get(gca,{'xlim','ylim'});
+
 % Reset the Canvas to just show the original image
 handles.myCanvas = imshow(handles.img);
 handles.currentlyShownLabels = [];
@@ -33,6 +36,10 @@ if exist(fullInferencePath, 'file')
 else
     disp('No Inference file found, generate it first!');
 end
+
+% Restore old zoom settings
+zoom reset
+set(gca, {'xlim','ylim'}, Limits)
 
 guidata(hObject, handles);
 

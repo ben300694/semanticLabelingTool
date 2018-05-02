@@ -22,7 +22,7 @@ function varargout = semanticLabelingTool(varargin)
 
 % Edit the above text to modify the response to help semanticLabelingTool
 
-% Last Modified by GUIDE v2.5 27-Apr-2018 16:38:44
+% Last Modified by GUIDE v2.5 02-May-2018 21:26:47
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -83,6 +83,7 @@ handles.regionSize = get(handles.sliderRegionSize,'Value');
 handles.regularizer = get(handles.sliderRegularizer,'Value');
 handles.alphaValue = 0.45;
 handles.superPixels = [];
+handles.databaseLoaded = false;
 handles.readyToLabel = false;
 handles.isSaved = false;
 handles.myCanvas = [];
@@ -247,6 +248,7 @@ end
 
 % --- Executes on button press in btnLoadDatabase.
 function btnLoadDatabase_Callback(hObject, eventdata, handles)
+
 if (exist(handles.filelistFile,'file') && exist(handles.annoDir,'dir') && exist(handles.imgDir,'dir'))
     disp('All files exist --> Load imagelist.')
     set(handles.stStatusDatabase,'String','Loading successful');
@@ -257,15 +259,21 @@ if (exist(handles.filelistFile,'file') && exist(handles.annoDir,'dir') && exist(
     
     updateImg(handles.imgIdx,hObject,handles);
     
-    set(handles.TableFilelist,'Data',filelist);
-    set(handles.TableFilelist,'ColumnWidth',{200});
+    set(handles.TableFilelist, 'Data', filelist);
+    set(handles.TableFilelist, 'ColumnWidth', {200});
     
     set(handles.etImagePath, 'String', handles.imgDir);
     set(handles.etAnnotationsPath, 'String', handles.annoDir);
     set(handles.etFilelist, 'String', handles.filelistFile);
+    
+    handles.databaseLoaded = true;
 else
     set(handles.stStatusDatabase,'String','Could not load database');
+    handles.databaseLoaded = true;
 end
+
+guidata(hObject, handles);
+
 end
 
 
@@ -297,8 +305,6 @@ end
 % --- Executes when selected cell(s) is changed in TableFilelist.
 function TableFilelist_CellSelectionCallback(hObject, eventdata, handles)
 handles.imgIdx = eventdata.Indices(1);
-disp(['handles.imgIdx changed to ', int2str(handles.imgIdx)])
-% disp(handles.filelist)
 handles = updateImg(handles.imgIdx,hObject,handles);
 guidata(hObject, handles);
 end
@@ -309,7 +315,6 @@ end
 function btnComputeSegments_Callback(hObject, eventdata, handles)
     computeSegments(hObject,eventdata,handles)
 end
-
 
 % --- Executes on button press in btnDrawPolygon.
 function btnDrawPolygon_Callback(hObject, eventdata, handles)
@@ -428,8 +433,11 @@ if ~isempty(Position)
     handles.superPixels.labelImg = labelImg; % Update the overlay
     handles.isSaved = false; % Prompt user to save image
 
+    
     % Plot new Overlay
     handles = drawOverlay(hObject, handles);
+    
+    
 
     % Have to set the ButtonDownFcn again 
     % because a plot clears the objects properties
@@ -654,26 +662,6 @@ handles.currentlyShownLabels = [];
 guidata(hObject, handles);
 end
 
-% --- Executes on button press in btnLoadInference.
-function btnLoadInference_Callback(hObject, eventdata, handles)
-% hObject    handle to btnLoadInference (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-drawInference(handles.imgIdx, hObject, handles, false);
-
-end
-
-% --- Executes on button press in btnLoadInferenceCRF.
-function btnLoadInferenceCRF_Callback(hObject, eventdata, handles)
-% hObject    handle to btnLoadInferenceCRF (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-drawInference(handles.imgIdx, hObject, handles, true);
-
-end
-
 % Alpha Value for Overlays
 
 function etAlphaValue_Callback(hObject, eventdata, handles)
@@ -728,8 +716,7 @@ function menuSaveAnnotation_Callback(hObject, eventdata, handles)
 % hObject    handle to menuSaveAnnotation (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-anno = handles.superPixels;
-save([handles.annoDir '/'  handles.imgId '.mat'], 'anno');
+annotationToMat(handles)
 end
 
 
@@ -739,4 +726,29 @@ function menuSaveAsPNG_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 annotationToPNG(handles.imgIdx, hObject, handles);
+end
+
+
+% --------------------------------------------------------------------
+function menuInference_Callback(hObject, eventdata, handles)
+% hObject    handle to menuInference (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+end
+
+% --------------------------------------------------------------------
+function menuLoadInference_Callback(hObject, eventdata, handles)
+% hObject    handle to menuLoadInference (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+drawInference(handles.imgIdx, hObject, handles, false);
+end
+
+
+% --------------------------------------------------------------------
+function menuLoadInferenceCRF_Callback(hObject, eventdata, handles)
+% hObject    handle to menuLoadInferenceCRF (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+drawInference(handles.imgIdx, hObject, handles, true);
 end
