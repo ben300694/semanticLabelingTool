@@ -61,9 +61,7 @@ addpath(genpath(folder));
 % Choose default command line output for semanticLabelingTool
 handles.output = hObject;
 
-% handles.filelistFile = '/home/garbade/datasets/goPro/filelist_1280x720.txt';
-% handles.annoDir = '/home/garbade/datasets/goPro/annotations';
-% handles.imgDir = '/home/garbade/datasets/goPro/images_1280x720';
+% Set the path to all the data directories
 handles.imgDir = '/media/data/bruppik/deeplab_resnet_test_dataset/images';
 handles.filelistFile = '/media/data/bruppik/deeplab_resnet_test_dataset/filelist.txt';
 handles.trainFile = '/media/data/bruppik/deeplab_resnet_test_dataset/train.txt';
@@ -92,43 +90,16 @@ handles.myCanvas = [];
 handles.currentlyShownLabels = [];
 handles.useCRF = true;
 
-% handles.colors = [  255 255 255;...% Background     
-%                     128 64 128 ;...% Road           
-%                     128 0 0	   ;...% Building       
-%                     0 0 192	   ;...% Sidewalk       
-%                     64 0 128   ;...% Car            
-%                     192 192 128;...% Column_Pole    
-%                     192 128 128;...% Sign_Symbol       
-%                     64 64 128  ;...% Fence          
-%                     64 64 0    ;...% Pedestrian     
-%                     0  128  192;...% Bicyclist      
-%                     0    0    0;...% Water          
-%                     255  0  255;...% Cliff          
-%                     128 128 128;...% Sky            
-%                     128 128 0  ;...% Tree                               
-%                   ];
-% handles.colorNames = {  'Background', ...
-%                         'Road', ...
-%                         'Building', ...
-%                         'Sidewalk', ...
-%                         'Car', ...
-%                         'Column_Pole', ...
-%                         'Sign_Symbol', ...
-%                         'Fence', ...
-%                         'Pedestrian', ...
-%                         'Bicyclist',...
-%                         'Water',...
-%                         'Cliff',...
-%                         'Sky', ...
-%                         'Tree'};
+% Load the colormap
 if ~exist('colormap.mat')
     error('Please create a colormap file in the current folder')
 end
 
 colMap = load('colormap.mat');
 handles.colorNames = colMap.colorNames;
-handles.colors= colMap.colors;
+handles.colors= colMap.colorRGBValues;
 
+% Get parameters for calculation of superpixels
 set(handles.etRegionSize,'String',num2str(get(handles.sliderRegionSize,'Value')));
 set(handles.etRegularizer,'String',num2str(get(handles.sliderRegularizer,'Value')));
 

@@ -6,11 +6,14 @@ using [tensorflow-deeplab](https://github.com/DrSleep/tensorflow-deeplab-resnet)
 
 [Here](https://youtu.be/oycY0ZMMszI) is some demo video of the tool
 
-## Prerequisites:
- - Download and extract [vl_feat library](http://www.vlfeat.org/) including the function to compute superpixels `vl_slic`
+## Setup:
+ - Download and extract [vl_feat library](http://www.vlfeat.org/) 
+   including the function to compute superpixels `vl_slic`
  - Add the all extracted folders to your Matlab path
  - Install tensorflow
- - Clone the [modified version](https://github.com/ben300694/tensorflow-deeplab-resnet) of Deeplab Resnet 
+ - Clone the [modified version](https://github.com/ben300694/tensorflow-deeplab-resnet) of Deeplab Resnet
+   (this also contains necessary configuration files for the matlab script)
+ - Edit the path to the configuration file in `semanticLabelingTool.m`
  - Set up the folder structure of your dataset in the following way:
 ```
 
@@ -44,6 +47,8 @@ You need the following Matlab functions:
  - [x] Replace system [call to caffe-deeplab](https://github.com/mgarbade/semanticLabelingTool/blob/43cbde95bf7fbd802e0f25f773517d2a3956cb82/getSematicLabels.m#L1-L41) by some easier-to-install NN library, eg [tensorflow-deeplab](https://github.com/DrSleep/tensorflow-deeplab-resnet)
  - [x] Postprocessing of the inference with a CRF
  - [x] Finetune Deeplab with the training data
+ - [x] Add a function for seeing the class label when clicking on a pixel in the image
+ - [ ] Label more training data
  - [ ] Find good metaparameters for finetuning the model
- - [ ] See the class label when hovering over the image
  - [ ] Allow adding and removing classes in the interface
+ - [ ] Use predictions from Deeplab as a basis for labeling to remove the amount of work required for labeling
