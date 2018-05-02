@@ -22,7 +22,7 @@ function varargout = semanticLabelingTool(varargin)
 
 % Edit the above text to modify the response to help semanticLabelingTool
 
-% Last Modified by GUIDE v2.5 02-May-2018 21:26:47
+% Last Modified by GUIDE v2.5 02-May-2018 21:55:44
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -83,6 +83,7 @@ handles.regionSize = get(handles.sliderRegionSize,'Value');
 handles.regularizer = get(handles.sliderRegularizer,'Value');
 handles.alphaValue = 0.45;
 handles.superPixels = [];
+handles.freeAnnotationLabels = [];
 handles.databaseLoaded = false;
 handles.readyToLabel = false;
 handles.isSaved = false;
@@ -139,7 +140,7 @@ end
 
 % --- Executes on button press in btnPrevious.
 function btnPrevious_Callback(hObject, eventdata, handles)
-% Load previous imgage
+% Load previous image
 imgIdx = handles.imgIdx;
 if imgIdx > 1 
     imgIdx = imgIdx - 1;
@@ -257,7 +258,7 @@ if (exist(handles.filelistFile,'file') && exist(handles.annoDir,'dir') && exist(
     handles.numImgs = size(filelist,1);
     handles.imgIdx = 1;
     
-    updateImg(handles.imgIdx,hObject,handles);
+    handles = updateImg(handles.imgIdx, hObject, handles);
     
     set(handles.TableFilelist, 'Data', filelist);
     set(handles.TableFilelist, 'ColumnWidth', {200});
@@ -316,8 +317,8 @@ function btnComputeSegments_Callback(hObject, eventdata, handles)
     computeSegments(hObject,eventdata,handles)
 end
 
-% --- Executes on button press in btnDrawPolygon.
-function btnDrawPolygon_Callback(hObject, eventdata, handles)
+% --- Executes on button press in btnDrawSuperpixelPolygon.
+function btnDrawSuperpixelPolygon_Callback(hObject, eventdata, handles)
 % Draw polygon
 % Get Centroids in polygon
 % Get Inliers
@@ -346,6 +347,46 @@ else
     msg = {'Image not ready to' 'label yet. Compute' 'super pixels first'};
     set(handles.stStatus,'String',msg);
 end
+
+guidata(hObject, handles); 
+
+end
+
+% --- Executes on button press in btnDrawFreePolygon.
+function btnDrawFreePolygon_Callback(hObject, eventdata, handles)
+
+labelImg = handles.freeAnnotationLabels;
+[m, n] = size(handles.img);
+
+% TODO Fix the bug that this in not correctly set
+if isempty(handles.freeAnnotationLabels)
+    handles.freeAnnotationLabels = zeros(m, n);
+end
+
+% Draw polygon
+[xi, yi] = getline;
+disp([xi, yi])
+
+% Get Pixels in polygon
+overlayMask = poly2mask(xi, yi, m, n);
+% imagesc(overlayMask)
+
+% Change label of these Pixels
+
+indName = get(get(handles.Labels, 'SelectedObject'), 'String');
+ind = find(ismember(handles.colorNames, indName)); % Get ind corresponding to color / label
+handles.selectedLabel = ind;
+
+labelImg(overlayMask) = handles.selectedLabel ; % Colorize selected polygon
+
+
+% Update the overlay
+handles.freeAnnotationLabels = labelImg;
+handles.isSaved = false; % Prompt user to save image
+handles = drawAnnotationOverlay(hObject, handles, handles.freeAnnotationLabels);
+
+msg = {'Please hit ''Save''' 'to store modifications'};
+set(handles.stStatus, 'String', msg);
 
 guidata(hObject, handles); 
 
@@ -381,7 +422,6 @@ end
 
 end
 
-
 % --- Executes on button press in btnSelectSuperpixels.
 function btnSelectSuperpixels_Callback(hObject, eventdata, handles)
 % Select an arbitrary number of points
@@ -396,7 +436,6 @@ else
     msg = {'myCanvas handle' 'is empty'};
     set(handles.stStatus,'String',msg);
 end
-
 
 end
 

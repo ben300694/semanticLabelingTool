@@ -23,6 +23,7 @@ if exist(fullInferencePath, 'file')
             inferenceLabels = struc.labels;
       end
       handles.currentlyShownLabels = inferenceLabels;
+      handles.freeAnnotationLabels = inferenceLabels;
       fullMask = im2bw(int16(inferenceLabels));
       
       hold on

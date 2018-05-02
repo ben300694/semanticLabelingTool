@@ -12,8 +12,6 @@ function handles = updateImg(imgIdx, hObject, handles)
 %    end
 % end
 
-disp(['Current handles.imgIdx is ', int2str(handles.imgIdx)])
-
 % Save current zoom settings
 if handles.databaseLoaded
     Limits = get(gca,{'xlim','ylim'});
@@ -22,6 +20,8 @@ end
 handles.imgIdx = imgIdx;
 handles.imgName = handles.filelist{imgIdx};
 [~, handles.imgId,~] = fileparts(handles.imgName);
+
+disp(['Current handles.imgIdx is ', int2str(handles.imgIdx)])
 
 set(handles.stImgName,'String',handles.imgId);
 fullImgPath = [handles.imgDir '/'  handles.imgName];

@@ -1,4 +1,4 @@
-function handles = drawOverlay(hObject,handles)
+function handles = drawOverlay(hObject, handles)
 
 % Save current zoom settings
 Limits = get(gca,{'xlim','ylim'});
@@ -12,7 +12,7 @@ fullMask = im2bw(handles.superPixels.labelImg); % TODO: Check if image to bw is 
 handles.myCanvas = imshow(handles.superPixels.oversegImage);
 
 hold on
-    overlay_final = ind2rgb(handles.superPixels.labelImg,handles.colors);
+    overlay_final = ind2rgb(handles.superPixels.labelImg, handles.colors);
     overlay_final = uint8(overlay_final);
     handles.myCanvas = imshow(overlay_final);
     alphaMask = double(fullMask)*handles.alphaValue;
