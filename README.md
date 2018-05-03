@@ -18,15 +18,24 @@ using [tensorflow-deeplab](https://github.com/DrSleep/tensorflow-deeplab-resnet)
 ```
 
 .
-+-- annotations
-|   +-- img00001.png
-|   +-- img00001.png
++-- annotations_Free
+|   +-- img00001.mat
+|   +-- img00002.mat
 |   +-- ...
 |
 +-- annotations_PNG
-+-- images
+|   +-- anno_img00001.png
+|   +-- anno_img00009.png
+|   +-- ...
+|
++-- annotations_Superpixels
 |   +-- img00001.mat
 |   +-- img00002.mat
+|   +-- ...
+|
++-- images
+|   +-- img00001.png
+|   +-- img00002.png
 |   +-- ...
 |
 +-- inference
@@ -48,7 +57,8 @@ You need the following Matlab functions:
  - [x] Postprocessing of the inference with a CRF
  - [x] Finetune Deeplab with the training data
  - [x] Add a function for seeing the class label when clicking on a pixel in the image
+ - [ ] Use predictions from Deeplab as a basis for labeling to remove the amount of work required for labeling,
+       for this add the posibility to change the labels on a pixel by pixel level (or inside of a polygon)
  - [ ] Label more training data
  - [ ] Find good metaparameters for finetuning the model
  - [ ] Allow adding and removing classes in the interface
- - [ ] Use predictions from Deeplab as a basis for labeling to remove the amount of work required for labeling

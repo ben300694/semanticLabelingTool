@@ -1,4 +1,4 @@
-function handles = loadAndDrawAnnotation(imgIdx, hObject, handles)
+function handles = loadAndDrawSuperpixelsAnnotation(imgIdx, hObject, handles)
 
 % Reset the Canvas to just show the original image
 handles.myCanvas = imshow(handles.img);
@@ -10,7 +10,7 @@ handles.imgName = handles.filelist{imgIdx};
 
 set(handles.stImgName, 'String', handles.imgId);
 fullImgPath = [handles.imgDir '/'  handles.imgName];
-fullAnnoPath = [handles.annoDir '/'  handles.imgId '.mat'];
+fullAnnoPath = [handles.annoSuperpixelsDir '/'  handles.imgId '.mat'];
 
 if exist(fullAnnoPath,'file') && exist(fullImgPath,'file')
     

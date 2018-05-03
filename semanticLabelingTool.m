@@ -22,7 +22,7 @@ function varargout = semanticLabelingTool(varargin)
 
 % Edit the above text to modify the response to help semanticLabelingTool
 
-% Last Modified by GUIDE v2.5 02-May-2018 21:55:44
+% Last Modified by GUIDE v2.5 03-May-2018 13:57:03
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -66,8 +66,9 @@ handles.imgDir = '/media/data/bruppik/deeplab_resnet_test_dataset/images';
 handles.filelistFile = '/media/data/bruppik/deeplab_resnet_test_dataset/filelist.txt';
 handles.trainFile = '/media/data/bruppik/deeplab_resnet_test_dataset/train.txt';
 
-handles.annoDir = '/media/data/bruppik/deeplab_resnet_test_dataset/annotations';
+handles.annoFreeDir = '/media/data/bruppik/deeplab_resnet_test_dataset/annotations_Free';
 handles.annoPNGDir = '/media/data/bruppik/deeplab_resnet_test_dataset/annotations_PNG';
+handles.annoSuperpixelsDir = '/media/data/bruppik/deeplab_resnet_test_dataset/annotations_Superpixels';
 
 handles.inferenceDir = '/media/data/bruppik/deeplab_resnet_test_dataset/inference';
 handles.snapshotDir = '/media/data/bruppik/deeplab_resnet_test_dataset/snapshots_finetune';
@@ -112,7 +113,7 @@ handles.selectedLabel = ind;
 
 % Update the text in the edit textboxes
 set(handles.etImagePath, 'String', handles.imgDir);
-set(handles.etAnnotationsPath, 'String', handles.annoDir);
+set(handles.etAnnotationsPath, 'String', handles.annoSuperpixelsDir);
 set(handles.etFilelist, 'String', handles.filelistFile);
 set(handles.etCkptFile, 'String', handles.ckptFile);
 
@@ -136,7 +137,7 @@ function varargout = semanticLabelingTool_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 end
 
-%% Callbacks for Iterate through images
+%% Callbacks for Iterating through images
 
 % --- Executes on button press in btnPrevious.
 function btnPrevious_Callback(hObject, eventdata, handles)
@@ -159,7 +160,7 @@ end
 end
 
 
-%%
+%% Parameters for Superpixel Calculation
 
 % --- Executes on slider movement.
 function sliderRegionSize_Callback(hObject, eventdata, handles)
@@ -242,15 +243,15 @@ end
 
 % --- Executes on button press in btnAnnPath.
 function btnAnnPath_Callback(hObject, eventdata, handles)
-handles.annoDir = uigetdir(handles.annoDir);
-set(handles.etAnnotationsPath,'String',handles.annoDir);
+handles.annoSuperpixelsDir = uigetdir(handles.annoSuperpixelsDir);
+set(handles.etAnnotationsPath,'String',handles.annoSuperpixelsDir);
 guidata(hObject, handles); 
 end
 
 % --- Executes on button press in btnLoadDatabase.
 function btnLoadDatabase_Callback(hObject, eventdata, handles)
 
-if (exist(handles.filelistFile,'file') && exist(handles.annoDir,'dir') && exist(handles.imgDir,'dir'))
+if (exist(handles.filelistFile,'file') && exist(handles.annoSuperpixelsDir,'dir') && exist(handles.imgDir,'dir'))
     disp('All files exist --> Load imagelist.')
     set(handles.stStatusDatabase,'String','Loading successful');
     filelist = getVideoNamesFromAsciiFile(handles.filelistFile);
@@ -264,7 +265,7 @@ if (exist(handles.filelistFile,'file') && exist(handles.annoDir,'dir') && exist(
     set(handles.TableFilelist, 'ColumnWidth', {200});
     
     set(handles.etImagePath, 'String', handles.imgDir);
-    set(handles.etAnnotationsPath, 'String', handles.annoDir);
+    set(handles.etAnnotationsPath, 'String', handles.annoSuperpixelsDir);
     set(handles.etFilelist, 'String', handles.filelistFile);
     
     handles.databaseLoaded = true;
@@ -397,7 +398,7 @@ imgIdx = handles.imgIdx;
 handles.imgName = handles.filelist{imgIdx};
 
 fullImgPath = [handles.imgDir '/'  handles.imgName];
-fullAnnoPath = [handles.annoDir '/'  handles.imgId '.mat'];
+fullAnnoPath = [handles.annoSuperpixelsDir '/'  handles.imgId '.mat'];
 
 if exist(fullAnnoPath,'file')
     warning('Existing Annotation will be overwritten')
@@ -641,7 +642,7 @@ end
 % % --- Executes on button press in btnSaveAnnotation.
 % function btnSaveAnnotation_Callback(hObject, eventdata, handles)
 % anno = handles.superPixels;
-% save([handles.annoDir '/'  handles.imgId '.mat'], 'anno' );
+% save([handles.annoSuperpixelsDir '/'  handles.imgId '.mat'], 'anno' );
 % end
 % 
 % % --- Executes on button press in btnLoadAnnotation.
@@ -741,27 +742,36 @@ function menuAnnotation_Callback(hObject, eventdata, handles)
 end
 
 % --------------------------------------------------------------------
-function menuLoadAnnotation_Callback(hObject, eventdata, handles)
-% hObject    handle to menuLoadAnnotation (see GCBO)
+function menuLoadSuperpixelAnnotation_Callback(hObject, eventdata, handles)
+% hObject    handle to menuLoadSuperpixelAnnotation (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles = loadAndDrawAnnotation(handles.imgIdx, hObject, handles);
+handles = loadAndDrawSuperpixelsAnnotation(handles.imgIdx, hObject, handles);
 guidata(hObject, handles);
 end
 
 
 % --------------------------------------------------------------------
-function menuSaveAnnotation_Callback(hObject, eventdata, handles)
-% hObject    handle to menuSaveAnnotation (see GCBO)
+function menuSaveSuperpixelAnnotation_Callback(hObject, eventdata, handles)
+% hObject    handle to menuSaveSuperpixelAnnotation (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-annotationToMat(handles)
+annotationSuperpixelsToMat(handles);
 end
 
+% --------------------------------------------------------------------
+function menuSaveCurrentAsMat_Callback(hObject, eventdata, handles)
+% hObject    handle to menuSaveCurrentAsMat (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% TODO implement this function
+
+end
 
 % --------------------------------------------------------------------
-function menuSaveAsPNG_Callback(hObject, eventdata, handles)
-% hObject    handle to menuSaveAsPNG (see GCBO)
+function menuSaveCurrentAsPNG_Callback(hObject, eventdata, handles)
+% hObject    handle to menuSaveCurrentAsPNG (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 annotationToPNG(handles.imgIdx, hObject, handles);

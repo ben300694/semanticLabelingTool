@@ -4,7 +4,7 @@ handles.imgIdx = imgIdx;
 handles.imgName = handles.filelist{imgIdx};
 [~, handles.imgId,~] = fileparts(handles.imgName);
 
-set(handles.stImgName,'String',handles.imgId);
+set(handles.stImgName, 'String', handles.imgId);
 fullImgPath = [handles.imgDir '/'  handles.imgName];
 fullAnnoPath = [handles.annoDir '/'  handles.imgId '.mat'];
 fullAnnoPNGPath = [handles.annoPNGDir '/' 'anno_' handles.imgId '.png'];
