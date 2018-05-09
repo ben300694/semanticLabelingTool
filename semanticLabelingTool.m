@@ -54,26 +54,54 @@ function semanticLabelingTool_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to semanticLabelingTool (see VARARGIN)
 clc;
 
-
 folder = fileparts(which(mfilename)); 
 addpath(genpath(folder));
 
 % Choose default command line output for semanticLabelingTool
 handles.output = hObject;
 
+
+% Load yamlmatlab and read in the configuration file
+%%%
+% Change this path to the correct configuration file in
+% the tensorflow-deeplab-resnet repository
+%%%
+yaml_file = '/media/remote_home/bruppik/git-source/ben300694/tensorflow-deeplab-resnet/config.yml';
+YamlStruct = ReadYaml(yaml_file);
+% disp(YamlStruct.directories.annotations.ANNO_FREE_DIRECTORY)
+
 % Set the path to all the data directories
-handles.imgDir = '/media/data/bruppik/deeplab_resnet_test_dataset/images';
-handles.filelistFile = '/media/data/bruppik/deeplab_resnet_test_dataset/filelist.txt';
-handles.trainFile = '/media/data/bruppik/deeplab_resnet_test_dataset/train.txt';
 
-handles.annoFreeDir = '/media/data/bruppik/deeplab_resnet_test_dataset/annotations_Free';
-handles.annoPNGDir = '/media/data/bruppik/deeplab_resnet_test_dataset/annotations_PNG';
-handles.annoSuperpixelsDir = '/media/data/bruppik/deeplab_resnet_test_dataset/annotations_Superpixels';
+% handles.imgDir = '/media/data/bruppik/deeplab_resnet_test_dataset/images';
+% handles.filelistFile = '/media/data/bruppik/deeplab_resnet_test_dataset/filelist.txt';
+% handles.trainFile = '/media/data/bruppik/deeplab_resnet_test_dataset/train.txt';
+% 
+% handles.annoFreeDir = '/media/data/bruppik/deeplab_resnet_test_dataset/annotations_Free';
+% handles.annoPNGDir = '/media/data/bruppik/deeplab_resnet_test_dataset/annotations_PNG';
+% handles.annoSuperpixelsDir = '/media/data/bruppik/deeplab_resnet_test_dataset/annotations_Superpixels';
+% 
+% handles.inferenceDir = '/media/data/bruppik/deeplab_resnet_test_dataset/inference';
+% handles.snapshotDir = '/media/data/bruppik/deeplab_resnet_test_dataset/snapshots_finetune';
+% handles.ckptFile = '/media/data/bruppik/deeplab_resnet_test_dataset/snapshots_finetune/model_finetuned.ckpt-350';
 
-handles.inferenceDir = '/media/data/bruppik/deeplab_resnet_test_dataset/inference';
-handles.snapshotDir = '/media/data/bruppik/deeplab_resnet_test_dataset/snapshots_finetune';
-handles.ckptFile = '/media/data/bruppik/deeplab_resnet_test_dataset/snapshots_finetune/model_finetuned.ckpt-350';
+handles.imgDir = YamlStruct.directories.IMAGE_DIR;
+% Set this manually to load the entire filelist even when experimenting
+% with different filelists in Python
+handles.filelistFile = '/media/data/bruppik/cvg11/deeplab_resnet_test_dataset/filelist.txt';
+handles.trainFile = YamlStruct.directories.DATA_TRAIN_LIST_PATH;
 
+handles.annoFreeDir = YamlStruct.directories.annotations.ANNO_FREE_DIRECTORY;
+handles.annoPNGDir = YamlStruct.directories.annotations.ANNO_PNG_DIRECTORY;
+handles.annoSuperpixelsDir = YamlStruct.directories.annotations.ANNO_SUPERPIXELS_DIRECTORY;
+
+handles.inferenceDir = YamlStruct.directories.inference.MATLAB_SAVE_DIRECTORY;
+handles.snapshotDir = YamlStruct.directories.SNAPSHOT_DIRECTORY;
+handles.ckptFile = YamlStruct.RESTORE_FROM;
+
+% disp(handles)
+
+% Initialize the variables to the correct values
+% at the start of the program
 handles.imgName = '';
 handles.imgId = '';
 handles.img = [];

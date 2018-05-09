@@ -9,8 +9,12 @@ using [tensorflow-deeplab](https://github.com/DrSleep/tensorflow-deeplab-resnet)
 ## Setup:
  - Download and extract [vl_feat library](http://www.vlfeat.org/) 
    including the function to compute superpixels `vl_slic`
- - Add the all extracted folders to your Matlab path
- - Install tensorflow
+ - Download and extract [yamlmatlab](https://code.google.com/archive/p/yamlmatlab/)
+   (this is a module for reading configuration files in the
+   yaml format)
+ - Add the all extracted folders to your
+   Matlab path (a sample `startup.m` is included in the repository)
+ - Install tensorflow (preferably tensorflow-gpu)
  - Clone the [modified version](https://github.com/ben300694/tensorflow-deeplab-resnet) of Deeplab Resnet
    (this also contains necessary configuration files for the matlab script)
  - Edit the path to the configuration file in `semanticLabelingTool.m`
