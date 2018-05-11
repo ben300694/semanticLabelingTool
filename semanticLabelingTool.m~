@@ -328,6 +328,7 @@ guidata(hObject, handles);
 end
 
 
+
 function etFilelist_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of etFilelist as text
 %        str2double(get(hObject,'String')) returns contents of etFilelist as a double
@@ -388,7 +389,7 @@ if (handles.readyToLabel);
     handles.superPixels.labelImg = labelImg; % Update the overlay
     handles.isSaved = false; % Prompt user to save image
     
-    handles = drawSuperpixelOverlay(hObject,handles);
+    handles = drawOverlay(hObject,handles);
     msg = {'Please hit ''Save''' 'to store modifications'};
     set(handles.stStatus,'String',msg);
     
@@ -449,33 +450,75 @@ function btnSelectSuperpixels_Callback(hObject, eventdata, handles)
 h = handles.myCanvas;
 disp(h);
 if ~isempty(h)
-    set(h, 'ButtonDownFcn', @(src,eventdata)positionAndButton(src,eventdata,hObject));
+    set(h, 'ButtonDownFcn', @(src,eventdata)position_and_button(src,eventdata,hObject));
 else
     msg = {'myCanvas handle' 'is empty'};
     set(handles.stStatus,'String',msg);
 end
+
+end
+
+function position_and_button(src, eventdata, hObject)
+
+Position = get( ancestor(src,'axes'), 'CurrentPoint' );
+Button = get( ancestor(src,'figure'), 'SelectionType' );
+% hObject
+% src
+hfig = ancestor(src, 'figure'); % Get the handle to the figure
+handles = guidata(hfig); % Get the handles struct
+
+% hold on 
+Position = int32(Position);
+Point = Position(end,:);
+% plot(Point(1),Point(2),'r+');
+% hold off
+
+indName = get(get(handles.Labels ,'SelectedObject'),'String');
+ind = find(ismember(handles.colorNames,indName)); % Get ind corresponding to color / label
+handles.selectedLabel = ind;
+Position = int32(Position);
+
+if ~isempty(Position)
+
+    Point = Position(end,:); % Only take first point (not sure why output argument consists of 2 points)
+
+    spImg = handles.superPixels.superPixelImg;
+    superPixelId = spImg(Point(2),Point(1));
+    labelImg = handles.superPixels.labelImg;
+    overlayMask = (spImg == superPixelId);
+
+    labelImg(overlayMask) = handles.selectedLabel; % Colorize selected polygon
+    handles.superPixels.labelImg = labelImg; % Update the overlay
+    handles.isSaved = false; % Prompt user to save image
+
+    
+    % Plot new Overlay
+    handles = drawOverlay(hObject, handles);
+    
+    
+
+    % Have to set the ButtonDownFcn again 
+    % because a plot clears the objects properties
+    set(handles.myCanvas, 'ButtonDownFcn', @(src,eventdata)position_and_button(src,eventdata,hObject));    
+        
+    msg = {'Please hit ''Save''' 'to store modifications'};
+    set(handles.stStatus, 'String', msg);
+
+else 
+    msg = {'Point is empty' 'try again'};
+    set(handles.stStatus, 'String', msg);
+end
+
+guidata(hObject, handles)
 
 end
 
 % --- Executes on button press in btnChangePixel.
 function btnChangePixel_Callback(hObject, eventdata, handles)
-
-% Select an arbitrary single point
-% After selecting a point, get the corresponding coordinates
-% Label single pixel with the class selected
-
-h = handles.myCanvas;
-disp(h);
-
-if ~isempty(h)
-    set(h, 'ButtonDownFcn', @(src,eventdata)changePixelLabel(src,eventdata,hObject));
-else
-    msg = {'myCanvas handle' 'is empty'};
-    set(handles.stStatus,'String',msg);
+% hObject    handle to btnChangePixel (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
 end
-
-end
-
 
 %% Tools for pixel info
 
@@ -491,6 +534,56 @@ if ~isempty(h)
 else
     msg = {'myCanvas handle' 'is empty'};
     set(handles.stStatus, 'String', msg);
+end
+
+end
+
+function printPixelLabel(src, eventdata, hObject)
+Position = get( ancestor(src,'axes'), 'CurrentPoint' );
+Button = get( ancestor(src,'figure'), 'SelectionType' );
+% hObject
+% src
+hfig = ancestor(src, 'figure'); % Get the handle to the figure
+handles = guidata(hfig); % Get the handles struct
+
+% hold on 
+Position = int32(Position);
+Point = Position(end,:);
+% plot(Point(1),Point(2),'r+');
+% hold off
+
+Position = int32(Position);
+
+if ~isempty(Position)
+
+    Point = Position(end,:); % Only take first point (not sure why output argument consists of 2 points)
+
+    if ~isempty(handles.currentlyShownLabels)
+        pixelLabel = handles.currentlyShownLabels(Point(2),Point(1));
+    
+        if pixelLabel == 0
+            pixelLabelClass = 'undefined'
+        else
+            pixelLabelClass = handles.colorNames{pixelLabel}
+        end
+        
+        msg = {['Label of pixel at point ', ...
+               '(', int2str(Point(2)), ', ', int2str(Point(1)), ')', ...
+               ' is ', int2str(pixelLabel)], ...
+               ['Class ', int2str(pixelLabel), ' is ', pixelLabelClass]
+               }
+        set(handles.stInfoStatus,'String',msg);
+    else
+        msg = {['Pixel at point ', ...
+               '(', int2str(Point(2)), ', ', int2str(Point(1)), ')',...
+               ' selected'], ...
+               ['No labels are currently shown']};
+        set(handles.stInfoStatus,'String',msg);
+    end
+
+else 
+    msg = {'Point is empty' 'try again'};
+    set(handles.stStatus,'String',msg);
 end
 
 end
@@ -515,7 +608,7 @@ end
 %     handles.isSaved = false; % Prompt user to save image
 % 
 %     guidata(hObject, handles); 
-%     drawSuperpixelOverlay(hObject,handles)
+%     drawOverlay(hObject,handles)
 %     msg = {'Please hit ''Save''' 'to store modifications'};
 %     set(handles.stStatus,'String',msg);
 % 

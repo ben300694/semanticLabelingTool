@@ -24,7 +24,7 @@ if exist(fullAnnoPath,'file') && exist(fullImgPath,'file')
     msg = {'Image loaded', 'Annotation loaded'};
     set(handles.stStatus, 'String', msg);
     
-    handles = drawOverlay(hObject,handles);
+    handles = drawSuperpixelOverlay(hObject,handles);
 else
     msg = 'No annotation found';
     set(handles.stStatus, 'String', msg);

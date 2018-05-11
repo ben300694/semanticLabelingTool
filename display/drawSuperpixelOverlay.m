@@ -1,4 +1,4 @@
-function handles = drawOverlay(hObject, handles)
+function handles = drawSuperpixelOverlay(hObject, handles)
 
 % Save current zoom settings
 Limits = get(gca,{'xlim','ylim'});

@@ -1,7 +1,7 @@
 function handles = drawAnnotationOverlay(hObject, handles, overlay)
 
 % Save current zoom settings
-Limits = get(gca,{'xlim','ylim'});
+Limits = get(gca, {'xlim','ylim'});
 
 % Set labels to get correct pixel info
 handles.currentlyShownLabels = overlay;
