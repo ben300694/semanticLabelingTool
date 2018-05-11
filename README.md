@@ -1,5 +1,7 @@
 # semanticLabelingTool
-Tool to create ground truth semantic segmentation masks using super pixels. 
+Tool to create ground truth semantic segmentation masks using super pixels
+and at the same time training a network to suggest labels that have to
+be corrected by the annotator. 
 
 The goal is to finetune a network to perform the semantic segmentation for you,
 using [tensorflow-deeplab](https://github.com/DrSleep/tensorflow-deeplab-resnet).
@@ -13,11 +15,19 @@ using [tensorflow-deeplab](https://github.com/DrSleep/tensorflow-deeplab-resnet)
    (this is a module for reading configuration files in the
    yaml format)
  - Add the all extracted folders to your
-   Matlab path (a sample `startup.m` is included in the repository)
+   Matlab path
+   (a sample `startup.m` is included in the repository under
+   `examples/example_startup.m`)
  - Install tensorflow (preferably tensorflow-gpu)
- - Clone the [modified version](https://github.com/ben300694/tensorflow-deeplab-resnet) of Deeplab Resnet
+ - Clone the [modified version](https://github.com/ben300694/tensorflow-deeplab-resnet)
+   of Deeplab Resnet
    (this also contains necessary configuration files for the matlab script)
- - Edit the path to the configuration file in `semanticLabelingTool.m`
+ - Edit the following variables in `semanticLabelingTool.m`:
+    - `yaml_file` has to point to the `config.yml` in the tensorflow-deeplab-resnet repository
+    - `pathToPythonBinary` has to point to your python binary, preferably one
+      in a virtual environment where you installed tensorflow
+    - `pathToPythonScript` has to point to the `my_inference.py` script in the
+      tensorflow-deeplab-resnet repository
  - Set up the folder structure of your dataset in the following way:
 ```
 
@@ -37,13 +47,13 @@ using [tensorflow-deeplab](https://github.com/DrSleep/tensorflow-deeplab-resnet)
 |   +-- img00002.mat
 |   +-- ...
 |
++-- color_mask_output
 +-- images
 |   +-- img00001.png
 |   +-- img00002.png
 |   +-- ...
 |
-+-- inference
-+-- output
++-- matlab_files
 +-- snapshots_finetune
 +-- filelist.txt
 +-- train.txt
@@ -61,8 +71,12 @@ You need the following Matlab functions:
  - [x] Postprocessing of the inference with a CRF
  - [x] Finetune Deeplab with the training data
  - [x] Add a function for seeing the class label when clicking on a pixel in the image
- - [ ] Use predictions from Deeplab as a basis for labeling to remove the amount of work required for labeling,
-       for this add the posibility to change the labels on a pixel by pixel level (or inside of a polygon)
+ - [x] Use predictions from Deeplab as a basis for labeling to reduce the
+       amount of work required for labeling,
+       for this add the posibility to change the labels on a pixel by pixel
+       level (and inside of a polygon without relying on superpixels)
  - [ ] Label more training data
  - [ ] Find good metaparameters for finetuning the model
- - [ ] Allow adding and removing classes in the interface
+ - [ ] Implement adding and removing classes in the interface
+ - [ ] Include inference of geometry of the scene (depth, surface normals, ...)
+ - [ ] Higher level semantics, e.g. classification if landing is possible on surface or not

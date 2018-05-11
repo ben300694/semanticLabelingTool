@@ -22,7 +22,7 @@ function varargout = semanticLabelingTool(varargin)
 
 % Edit the above text to modify the response to help semanticLabelingTool
 
-% Last Modified by GUIDE v2.5 11-May-2018 18:12:19
+% Last Modified by GUIDE v2.5 11-May-2018 19:18:15
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -666,8 +666,15 @@ end
 %% Annotations
 
 % --------------------------------------------------------------------
-function menuAnnotation_Callback(hObject, eventdata, handles)
-% hObject    handle to menuAnnotation (see GCBO)
+function menuLoadAnnotation_Callback(hObject, eventdata, handles)
+% hObject    handle to menuLoadAnnotation (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+end
+
+% --------------------------------------------------------------------
+function menuSaveAnnotation_Callback(hObject, eventdata, handles)
+% hObject    handle to menuSaveAnnotation (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 end
@@ -738,4 +745,27 @@ function menuLoadInferenceCRF_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 drawInference(handles.imgIdx, hObject, handles, true);
+end
+
+%% Keyboard shortcuts
+
+% --- Executes on key press with focus on figure1 or any of its controls.
+function figure1_WindowKeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.FIGURE)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+
+% determine the key that was pressed 
+keyPressed = eventdata.Key;
+
+if strcmpi(keyPressed,'f')
+     % set focus to the button
+     % uicontrol(handles.btnDrawFreePolygon);
+     % call the callback
+     btnDrawFreePolygon_Callback(handles.btnDrawFreePolygon,[],handles);
+end
+
 end
