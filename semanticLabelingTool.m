@@ -60,18 +60,51 @@ addpath(genpath(folder));
 % Choose default command line output for semanticLabelingTool
 handles.output = hObject;
 
-
 % Load yamlmatlab and read in the configuration file
-%%%
+
+%%%%%%%%%%
 % Change this path to the correct configuration file in
 % the tensorflow-deeplab-resnet repository
-%%%
+%%%%%%%%%%
 yaml_file = '/media/remote_home/bruppik/git-source/ben300694/tensorflow-deeplab-resnet/config.yml';
 YamlStruct = ReadYaml(yaml_file);
 % disp(YamlStruct.directories.annotations.ANNO_FREE_DIRECTORY)
 
+%%%%%%%%%%
+% Change these paths to the correct:
+% - python binary in a virtual environment where you have installed all the dependencies
+%   (such as tensorflow, ...)
+% - script for inference
+%%%%%%%%%%
+pathToPythonBinary = '/media/remote_home/bruppik/anaconda2/envs/tensorflow/bin/python'
+pathToPythonScript = '/media/remote_home/bruppik/git-source/ben300694/tensorflow-deeplab-resnet/my_inference.py';
+
+
 % Set the path to all the data directories
 
+handles.imgDir = YamlStruct.directories.IMAGE_DIR;
+
+% Set this manually to load the entire filelist even when experimenting
+% with different filelists in Python
+% Uncomment the next line to load from the configuration file:
+% handles.filelistFile = YamlStruct.directories.DATA_FILELIST_PATH;
+handles.filelistFile = '/media/data/bruppik/cvg11/deeplab_resnet_test_dataset/filelist.txt';
+
+handles.trainFile = YamlStruct.directories.DATA_TRAIN_LIST_PATH;
+
+handles.annoFreeDir = YamlStruct.directories.annotations.ANNO_FREE_DIRECTORY;
+handles.annoPNGDir = YamlStruct.directories.annotations.ANNO_PNG_DIRECTORY;
+handles.annoSuperpixelsDir = YamlStruct.directories.annotations.ANNO_SUPERPIXELS_DIRECTORY;
+
+handles.inferenceDir = YamlStruct.directories.inference.MATLAB_SAVE_DIRECTORY;
+handles.snapshotDir = YamlStruct.directories.SNAPSHOT_DIRECTORY;
+handles.ckptFile = YamlStruct.RESTORE_FROM;
+
+handles.pathToPythonBinary = pathToPythonBinary;
+handles.pathToPythonScript = pathToPythonScript;
+
+% Left this here so that you can set a path manually for debugging
+%
 % handles.imgDir = '/media/data/bruppik/deeplab_resnet_test_dataset/images';
 % handles.filelistFile = '/media/data/bruppik/deeplab_resnet_test_dataset/filelist.txt';
 % handles.trainFile = '/media/data/bruppik/deeplab_resnet_test_dataset/train.txt';
@@ -84,19 +117,7 @@ YamlStruct = ReadYaml(yaml_file);
 % handles.snapshotDir = '/media/data/bruppik/deeplab_resnet_test_dataset/snapshots_finetune';
 % handles.ckptFile = '/media/data/bruppik/deeplab_resnet_test_dataset/snapshots_finetune/model_finetuned.ckpt-350';
 
-handles.imgDir = YamlStruct.directories.IMAGE_DIR;
-% Set this manually to load the entire filelist even when experimenting
-% with different filelists in Python
-handles.filelistFile = '/media/data/bruppik/cvg11/deeplab_resnet_test_dataset/filelist.txt';
-handles.trainFile = YamlStruct.directories.DATA_TRAIN_LIST_PATH;
 
-handles.annoFreeDir = YamlStruct.directories.annotations.ANNO_FREE_DIRECTORY;
-handles.annoPNGDir = YamlStruct.directories.annotations.ANNO_PNG_DIRECTORY;
-handles.annoSuperpixelsDir = YamlStruct.directories.annotations.ANNO_SUPERPIXELS_DIRECTORY;
-
-handles.inferenceDir = YamlStruct.directories.inference.MATLAB_SAVE_DIRECTORY;
-handles.snapshotDir = YamlStruct.directories.SNAPSHOT_DIRECTORY;
-handles.ckptFile = YamlStruct.RESTORE_FROM;
 
 % disp(handles)
 
