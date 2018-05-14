@@ -6,14 +6,14 @@ handles.imgName = handles.filelist{imgIdx};
 
 set(handles.stImgName, 'String', handles.imgId);
 fullImgPath = [handles.imgDir '/'  handles.imgName];
-fullAnnoPath = [handles.annoDir '/'  handles.imgId '.mat'];
+% fullAnnoPath = [handles.annoDir '/'  handles.imgId '.mat'];
 fullAnnoPNGPath = [handles.annoPNGDir '/' 'anno_' handles.imgId '.png'];
 
-if exist(fullAnnoPath,'file')
-    a = load(fullAnnoPath,'anno');
-    anno = a.anno;
+% if exist(fullAnnoPath,'file')
+    % a = load(fullAnnoPath,'anno');
+    % anno = a.anno;
     % Save labels as uint8 PNG
-    imwrite(uint8(anno.labelImg), fullAnnoPNGPath);
+    imwrite(uint8(handles.currentlyShownLabels), fullAnnoPNGPath);
     disp(['Annotation in PNG format written to ', fullAnnoPNGPath]);
     
     % Add new annotation to list of available training images
@@ -24,8 +24,8 @@ if exist(fullAnnoPath,'file')
     fclose(fileID);
 
     guidata(hObject, handles);
-else
-   disp('No annotation found!');
-end
+% else
+%   disp('No annotation found!');
+% end
 
 end

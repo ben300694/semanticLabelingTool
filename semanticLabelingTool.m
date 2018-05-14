@@ -87,8 +87,8 @@ handles.imgDir = YamlStruct.directories.IMAGE_DIR;
 % Set this manually to load the entire filelist even when experimenting
 % with different filelists in Python
 % Uncomment the next line to load from the configuration file:
-handles.filelistFile = YamlStruct.directories.lists.DATA_FILELIST_PATH;
-% handles.filelistFile = '/media/data/bruppik/cvg11/deeplab_resnet_test_dataset/filelist.txt';
+% handles.filelistFile = YamlStruct.directories.lists.DATA_FILELIST_PATH;
+handles.filelistFile = '/media/data/bruppik/cvg11/deeplab_resnet_test_dataset/filelist.txt';
 
 handles.trainFile = YamlStruct.directories.lists.DATA_TRAIN_LIST_PATH;
 
