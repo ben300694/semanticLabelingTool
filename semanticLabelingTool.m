@@ -168,6 +168,10 @@ set(handles.etCkptFile, 'String', handles.ckptFile);
 
 set(handles.etAlphaValue, 'String', handles.alphaValue);
 
+% Open the imageMetadata GUI Window
+handles.GUI_imageMetadataHandle = imageMetadata;
+
+
 % Update handles structure
 guidata(hObject, handles);
 
@@ -318,6 +322,17 @@ if (exist(handles.filelistFile,'file') && exist(handles.annoSuperpixelsDir,'dir'
     set(handles.etFilelist, 'String', handles.filelistFile);
     
     handles.databaseLoaded = true;
+    
+    % TODO test if setting these values works
+    % Update values in imageMetadata
+    GUI_imageMetadataData = guidata(handles.GUI_imageMetadataHandle);
+    disp(handles.GUI_imageMetadataHandle);
+    tableEntries = cell(1,2);
+    tableEntries{1,1} = 'imgIdx'
+    tableEntries{1,2} = handles.imgIdx
+    set(GUI_imageMetadataData.TableMetadata, 'Data', tableEntries);
+    guidata(handles.GUI_imageMetadataHandle, GUI_imageMetadataData);
+    
 else
     set(handles.stStatusDatabase,'String','Could not load database');
     handles.databaseLoaded = true;
