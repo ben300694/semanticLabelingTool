@@ -137,7 +137,7 @@ handles.freeAnnotationLabels = [];
 handles.databaseLoaded = false;
 handles.readyToLabel = false;
 handles.isSaved = false;
-handles.myCanvas = [];
+% DO NOT set 'handles.myCanvas' = [] !
 
 handles.currentlyShownLabels = [];
 handles.useCRF = true;
@@ -322,17 +322,8 @@ if (exist(handles.filelistFile,'file') && exist(handles.annoSuperpixelsDir,'dir'
     set(handles.etFilelist, 'String', handles.filelistFile);
     
     handles.databaseLoaded = true;
-    
-    % TODO test if setting these values works
-    % Update values in imageMetadata
-    GUI_imageMetadataData = guidata(handles.GUI_imageMetadataHandle);
-    disp(handles.GUI_imageMetadataHandle);
-    tableEntries = cell(1,2);
-    tableEntries{1,1} = 'imgIdx'
-    tableEntries{1,2} = handles.imgIdx
-    set(GUI_imageMetadataData.TableMetadata, 'Data', tableEntries);
-    guidata(handles.GUI_imageMetadataHandle, GUI_imageMetadataData);
-    
+
+
 else
     set(handles.stStatusDatabase,'String','Could not load database');
     handles.databaseLoaded = true;
@@ -500,9 +491,13 @@ function btnGetInfo_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-h = handles.myCanvas;
-if ~isempty(h)
-    set(h, 'ButtonDownFcn', @(src,eventdata)printPixelLabel(src, eventdata, hObject));
+set(handles.myCanvas, 'Visible', 'on');
+set(handles.myCanvas, 'PickableParts', 'all');
+disp(handles.myCanvas);
+
+if ~isempty(handles.myCanvas)
+    set(handles.myCanvas, 'ButtonDownFcn', @(src,eventdata)printPixelLabel(src, eventdata, hObject));
+    % set(gcf, 'WindowButtonDownFcn', @(src,eventdata)printPixelLabel(src, eventdata, hObject));
 else
     msg = {'myCanvas handle' 'is empty'};
     set(handles.stStatus, 'String', msg);
@@ -643,7 +638,7 @@ end
 % --- Executes on button press in btnReload.
 function btnReload_Callback(hObject, eventdata, handles)
 % Reload the image in the canvas
-handles.myCanvas = imshow(handles.img);
+imshow(handles.img, 'Parent', handles.myCanvas);
 handles.currentlyShownLabels = [];
 guidata(hObject, handles);
 end

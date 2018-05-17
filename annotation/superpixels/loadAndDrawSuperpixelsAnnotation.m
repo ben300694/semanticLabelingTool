@@ -1,7 +1,7 @@
 function handles = loadAndDrawSuperpixelsAnnotation(imgIdx, hObject, handles)
 
 % Reset the Canvas to just show the original image
-handles.myCanvas = imshow(handles.img);
+imshow(handles.img, 'Parent', handles.myCanvas);
 handles.currentlyShownLabels = [];
 
 handles.imgIdx = imgIdx;

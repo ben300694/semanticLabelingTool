@@ -17,7 +17,7 @@ if exist(fullImgPath,'file')
     regionSize = handles.regionSize;
     regularizer = handles.regularizer;
     superPixels = getAllSuperpixels(handles.img,regionSize,regularizer);
-    handles.myCanvas = imshow(superPixels.oversegImage);
+    imshow(superPixels.oversegImage, 'Parent', handles.myCanvas);
     handles.superPixels = superPixels;
     set(handles.stStatus,'String','Done');
     handles.readyToLabel = true; % Set flag that image can be labels

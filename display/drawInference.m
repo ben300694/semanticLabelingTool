@@ -4,7 +4,7 @@ function handles = drawInference(imgIdx, hObject, handles, withCRF)
 Limits = get(gca,{'xlim','ylim'});
 
 % Reset the Canvas to just show the original image
-handles.myCanvas = imshow(handles.img);
+imshow(handles.img, 'Parent', handles.myCanvas);
 handles.currentlyShownLabels = [];
 
 fullInferencePath = [handles.inferenceDir '/'  handles.imgId '.mat'];
@@ -29,9 +29,9 @@ if exist(fullInferencePath, 'file')
       hold on
           overlay_final = ind2rgb(inferenceLabels, handles.colors);
           overlay_final = uint8(overlay_final);
-          handles.myCanvas = imshow(overlay_final);
+          currentCanvas = imshow(overlay_final, 'Parent', handles.myCanvas);
           alphaMask = double(fullMask)*handles.alphaValue;
-          set(handles.myCanvas, 'AlphaData', alphaMask);   
+          set(currentCanvas, 'AlphaData', alphaMask);   
       hold off
       
 else

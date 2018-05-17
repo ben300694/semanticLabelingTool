@@ -1,10 +1,13 @@
 function printPixelLabel(src, eventdata, hObject)
-Position = get( ancestor(src,'axes'), 'CurrentPoint' );
-Button = get( ancestor(src,'figure'), 'SelectionType' );
+disp('printPixelLabel was called');
+Position = get( ancestor(src, 'axes'), 'CurrentPoint' );
+Button = get( ancestor(src, 'figure'), 'SelectionType' );
 % hObject
 % src
 hfig = ancestor(src, 'figure'); % Get the handle to the figure
 handles = guidata(hfig); % Get the handles struct
+
+disp(handles);
 
 % hold on 
 Position = int32(Position);

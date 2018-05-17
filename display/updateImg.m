@@ -23,12 +23,16 @@ handles.imgName = handles.filelist{imgIdx};
 
 disp(['Current handles.imgIdx is ', int2str(handles.imgIdx)])
 
-set(handles.stImgName,'String',handles.imgId);
-fullImgPath = [handles.imgDir '/'  handles.imgName];
-    
+set(handles.stImgName, 'String', handles.imgId);
+fullImgPath = [handles.imgDir, handles.imgName];
+
+% Update the values in the table in GUI_imageMetadata
+updateMetadata(fullImgPath, hObject, handles);
+
 if exist(fullImgPath,'file')
     handles.img = imread(fullImgPath);
-    handles.myCanvas = imshow(handles.img);
+    % disp(handles)
+    imshow(handles.img, 'Parent', handles.myCanvas);
     handles.currentlyShownLabels = [];
     handles.readyToLabel = false;
     msg = {'Image loaded', 'No annotation loaded'};

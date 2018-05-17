@@ -9,14 +9,14 @@ handles.currentlyShownLabels = handles.superPixels.labelImg;
 % Plot new Overlay
 fullMask = im2bw(handles.superPixels.labelImg); % TODO: Check if image to bw is the right function here
 
-handles.myCanvas = imshow(handles.superPixels.oversegImage);
+imshow(handles.superPixels.oversegImage, 'Parent', handles.myCanvas);
 
 hold on
     overlay_final = ind2rgb(handles.superPixels.labelImg, handles.colors);
     overlay_final = uint8(overlay_final);
-    handles.myCanvas = imshow(overlay_final);
+    currentCanvas = imshow(overlay_final, 'Parent', handles.myCanvas);
     alphaMask = double(fullMask)*handles.alphaValue;
-    set(handles.myCanvas, 'AlphaData', alphaMask);   
+    set(currentCanvas, 'AlphaData', alphaMask);   
 hold off
 
 % Restore old zoom settings
