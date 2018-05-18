@@ -125,6 +125,7 @@ handles.pathToPythonScript = pathToPythonScript;
 % at the start of the program
 handles.imgName = '';
 handles.imgId = '';
+handles.fullImgPath = '';
 handles.img = [];
 handles.imgIdx = [];
 handles.filelist = [];
@@ -322,8 +323,6 @@ if (exist(handles.filelistFile,'file') && exist(handles.annoSuperpixelsDir,'dir'
     set(handles.etFilelist, 'String', handles.filelistFile);
     
     handles.databaseLoaded = true;
-
-
 else
     set(handles.stStatusDatabase,'String','Could not load database');
     handles.databaseLoaded = true;
@@ -452,12 +451,14 @@ function btnSelectSuperpixels_Callback(hObject, eventdata, handles)
 % After selecting a point, get the corresponding superpixel ID
 % Paint superpixel with the color selected
 
-h = handles.myCanvas;
-disp(h);
-if ~isempty(h)
-    set(h, 'ButtonDownFcn', @(src,eventdata)positionAndButton(src,eventdata,hObject));
+set(handles.myCanvas, 'Visible', 'on');
+set(handles.myCanvas, 'PickableParts', 'all');
+% disp(handles.myCanvas);
+
+if ~isempty(handles.myCanvas)
+    set(handles.myCanvas, 'ButtonDownFcn', @(src,eventdata)positionAndButton(src,eventdata,hObject));
 else
-    msg = {'myCanvas handle' 'is empty'};
+    msg = {'handles.myCanvas' 'is empty'};
     set(handles.stStatus,'String',msg);
 end
 
@@ -470,13 +471,14 @@ function btnChangePixel_Callback(hObject, eventdata, handles)
 % After selecting a point, get the corresponding coordinates
 % Label single pixel with the class selected
 
-h = handles.myCanvas;
-disp(h);
+set(handles.myCanvas, 'Visible', 'on');
+set(handles.myCanvas, 'PickableParts', 'all');
+% disp(handles.myCanvas);
 
-if ~isempty(h)
-    set(h, 'ButtonDownFcn', @(src,eventdata)changePixelLabel(src,eventdata,hObject));
+if ~isempty(handles.myCanvas)
+    set(handles.myCanvas, 'ButtonDownFcn', @(src,eventdata)changePixelLabel(src,eventdata,hObject));
 else
-    msg = {'myCanvas handle' 'is empty'};
+    msg = {'handles.myCanvas' 'is empty'};
     set(handles.stStatus,'String',msg);
 end
 
@@ -493,50 +495,17 @@ function btnGetInfo_Callback(hObject, eventdata, handles)
 
 set(handles.myCanvas, 'Visible', 'on');
 set(handles.myCanvas, 'PickableParts', 'all');
-disp(handles.myCanvas);
+% disp(handles.myCanvas);
 
 if ~isempty(handles.myCanvas)
     set(handles.myCanvas, 'ButtonDownFcn', @(src,eventdata)printPixelLabel(src, eventdata, hObject));
     % set(gcf, 'WindowButtonDownFcn', @(src,eventdata)printPixelLabel(src, eventdata, hObject));
 else
-    msg = {'myCanvas handle' 'is empty'};
+    msg = {'handles.myCanvas' 'is empty'};
     set(handles.stStatus, 'String', msg);
 end
 
 end
-      
-% function superPixelId = paintSuperPixel(Position,label,hObject,handles)
-% 
-% Position = int32(Position);
-% 
-% if ~isempty(Position)
-% 
-%     Point = Position(end,:); % Only take first point ( not sure why output argument consists of 2 points)
-% 
-%     spImg = handles.superPixels.superPixelImg;
-%     superPixelId = spImg(Point(2),Point(1));
-%     labelImg = handles.superPixels.labelImg;
-%     overlayMask = (spImg == superPixelId);
-% 
-% 
-% 
-%     labelImg(overlayMask) = label; % Colorize selected polygon
-%     handles.superPixels.labelImg = labelImg; % Update the overlay
-%     handles.isSaved = false; % Prompt user to save image
-% 
-%     guidata(hObject, handles); 
-%     drawSuperpixelOverlay(hObject,handles)
-%     msg = {'Please hit ''Save''' 'to store modifications'};
-%     set(handles.stStatus,'String',msg);
-% 
-%     guidata(hObject, handles); 
-% 
-% else 
-%     msg = {'Point is empty' 'try again'};
-%     set(handles.stStatus,'String',msg);
-%    
-% 
-% end
 
 %% Annotations Paths
 

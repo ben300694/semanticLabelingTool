@@ -4,7 +4,8 @@ function handles = drawInference(imgIdx, hObject, handles, withCRF)
 Limits = get(gca,{'xlim','ylim'});
 
 % Reset the Canvas to just show the original image
-imshow(handles.img, 'Parent', handles.myCanvas);
+currentCanvas = imshow(handles.img, 'Parent', handles.myCanvas);
+set(currentCanvas, 'HitTest', 'off');
 handles.currentlyShownLabels = [];
 
 fullInferencePath = [handles.inferenceDir '/'  handles.imgId '.mat'];
@@ -30,13 +31,16 @@ if exist(fullInferencePath, 'file')
           overlay_final = ind2rgb(inferenceLabels, handles.colors);
           overlay_final = uint8(overlay_final);
           currentCanvas = imshow(overlay_final, 'Parent', handles.myCanvas);
+          set(currentCanvas, 'HitTest', 'off');
           alphaMask = double(fullMask)*handles.alphaValue;
           set(currentCanvas, 'AlphaData', alphaMask);   
       hold off
-      
 else
     disp('No Inference file found, generate it first!');
 end
+
+set(handles.myCanvas, 'Visible', 'on');
+set(handles.myCanvas, 'PickableParts', 'all');
 
 % Restore old zoom settings
 zoom reset

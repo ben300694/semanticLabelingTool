@@ -4,7 +4,8 @@ function handles = loadAndDrawFreeAnnotation(imgIdx, hObject, handles)
 Limits = get(gca,{'xlim','ylim'});
 
 % Reset the Canvas to just show the original image
-imshow(handles.img, 'Parent', handles.myCanvas);
+currentCanvas = imshow(handles.img, 'Parent', handles.myCanvas);
+set(currentCanvas, 'HitTest', 'off');
 handles.currentlyShownLabels = [];
 
 handles.imgIdx = imgIdx;
@@ -26,15 +27,7 @@ if exist(fullAnnoPath,'file') && exist(fullImgPath,'file')
     msg = {'Image loaded', 'Free Annotation loaded'};
     set(handles.stStatus, 'String', msg);
     
-    fullMask = im2bw(int16(anno));
-      
-    hold on
-        overlay_final = ind2rgb(anno, handles.colors);
-        overlay_final = uint8(overlay_final);
-        currentCanvas = imshow(overlay_final, 'Parent', handles.myCanvas);
-        alphaMask = double(fullMask)*handles.alphaValue;
-        set(currentCanvas, 'AlphaData', alphaMask);   
-    hold off
+    handles = drawAnnotationOverlay(hObject, handles, handles.currentlyShownLabels);
 else
     disp('No Free Annotation File found, generate it first!');
 end

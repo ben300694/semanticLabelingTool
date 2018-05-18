@@ -1,5 +1,6 @@
 function printPixelLabel(src, eventdata, hObject)
-disp('printPixelLabel was called');
+disp('printPixelLabel was called.');
+
 Position = get( ancestor(src, 'axes'), 'CurrentPoint' );
 Button = get( ancestor(src, 'figure'), 'SelectionType' );
 % hObject
@@ -7,7 +8,7 @@ Button = get( ancestor(src, 'figure'), 'SelectionType' );
 hfig = ancestor(src, 'figure'); % Get the handle to the figure
 handles = guidata(hfig); % Get the handles struct
 
-disp(handles);
+% disp(handles);
 
 % hold on 
 Position = int32(Position);
@@ -25,23 +26,27 @@ if ~isempty(Position)
         pixelLabel = handles.currentlyShownLabels(Point(2),Point(1));
     
         if pixelLabel == 0
-            pixelLabelClass = 'undefined'
+            pixelLabelClass = 'undefined';
         else
-            pixelLabelClass = handles.colorNames{pixelLabel}
+            pixelLabelClass = handles.colorNames{pixelLabel};
         end
         
         msg = {['Label of pixel at point ', ...
                '(', int2str(Point(2)), ', ', int2str(Point(1)), ')', ...
                ' is ', int2str(pixelLabel)], ...
                ['Class ', int2str(pixelLabel), ' is ', pixelLabelClass]
-               }
+               };
         set(handles.stInfoStatus,'String',msg);
+        % Console output
+        disp(msg);
     else
         msg = {['Pixel at point ', ...
                '(', int2str(Point(2)), ', ', int2str(Point(1)), ')',...
                ' selected'], ...
                ['No labels are currently shown']};
         set(handles.stInfoStatus,'String',msg);
+        % Console output
+        disp(msg);
     end
 
 else 

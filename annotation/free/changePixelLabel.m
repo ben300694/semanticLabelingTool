@@ -1,4 +1,6 @@
 function changePixelLabel(src, eventdata, hObject)
+disp('changePixelLabel was called.');
+
 Position = get( ancestor(src,'axes'), 'CurrentPoint' );
 Button = get( ancestor(src,'figure'), 'SelectionType' );
 % hObject
@@ -19,7 +21,11 @@ if ~isempty(Position)
     Point = Position(end,:); % Only take first point (not sure why output argument consists of 2 points)
 
     if ~isempty(handles.currentlyShownLabels)
-
+        msg = {['Pixel at point ', ...
+               '(', int2str(Point(2)), ', ', int2str(Point(1)), ')',...
+               ' selected']};
+        set(handles.stInfoStatus,'String',msg);
+        
         % Get currently selected label
         indName = get(get(handles.Labels, 'SelectedObject'), 'String');
         ind = find(ismember(handles.colorNames, indName)); % Get ind corresponding to color / label
@@ -31,6 +37,8 @@ if ~isempty(Position)
         % Update the overlay
         handles = drawAnnotationOverlay(hObject, handles, handles.freeAnnotationLabels);
 
+        set(handles.myCanvas, 'Visible', 'on');
+        set(handles.myCanvas, 'PickableParts', 'all');
         % Have to set the ButtonDownFcn again 
         % because a plot clears the objects properties
         set(handles.myCanvas, 'ButtonDownFcn', @(src,eventdata)changePixelLabel(src,eventdata,hObject));    
