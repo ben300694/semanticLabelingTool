@@ -150,7 +150,7 @@ end
 
 colMap = load('colormap.mat');
 handles.colorNames = colMap.colorNames;
-handles.colors= colMap.colorRGBValues;
+handles.colors = colMap.colorRGBValues;
 
 % Get parameters for calculation of superpixels
 set(handles.etRegionSize,'String',num2str(get(handles.sliderRegionSize,'Value')));
