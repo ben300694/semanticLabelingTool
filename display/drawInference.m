@@ -8,10 +8,10 @@ currentCanvas = imshow(handles.img, 'Parent', handles.myCanvas);
 set(currentCanvas, 'HitTest', 'off');
 handles.currentlyShownLabels = [];
 
-fullInferencePath = [handles.inferenceDir '/'  handles.imgId '.mat'];
+handles.fullInferencePath = [handles.inferenceDir '/'  handles.imgId '.mat'];
 
-if exist(fullInferencePath, 'file')
-      struc = load(fullInferencePath);
+if exist(handles.fullInferencePath, 'file')
+      struc = load(handles.fullInferencePath);
       
       if (withCRF == true)
             if isfield(struc,'labels_crf')

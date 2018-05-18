@@ -13,12 +13,12 @@ handles.imgName = handles.filelist{imgIdx};
 [~, handles.imgId, ~] = fileparts(handles.imgName);
 
 set(handles.stImgName, 'String', handles.imgId);
-fullImgPath = [handles.imgDir, handles.imgName];
-fullAnnoPath = [handles.annoFreeDir, 'anno_free_', handles.imgId, '.mat'];
+handles.fullImgPath = [handles.imgDir, handles.imgName];
+handles.fullAnnoFreePath = [handles.annoFreeDir, 'anno_free_', handles.imgId, '.mat'];
 
-if exist(fullAnnoPath,'file') && exist(fullImgPath,'file')
+if exist(handles.fullAnnoFreePath,'file') && exist(handles.fullImgPath,'file')
     
-    A = load(fullAnnoPath, 'anno');
+    A = load(handles.fullAnnoFreePath, 'anno');
     anno = A.anno;
     
     handles.currentlyShownLabels = anno;

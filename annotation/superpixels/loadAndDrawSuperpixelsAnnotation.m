@@ -9,12 +9,12 @@ handles.imgName = handles.filelist{imgIdx};
 [~, handles.imgId,~] = fileparts(handles.imgName);
 
 set(handles.stImgName, 'String', handles.imgId);
-fullImgPath = [handles.imgDir '/'  handles.imgName];
-fullAnnoPath = [handles.annoSuperpixelsDir '/'  handles.imgId '.mat'];
+handles.fullImgPath = [handles.imgDir '/'  handles.imgName];
+handles.fullAnnoSuperpixelPath = [handles.annoSuperpixelsDir '/'  handles.imgId '.mat'];
 
-if exist(fullAnnoPath,'file') && exist(fullImgPath,'file')
+if exist(handles.fullAnnoSuperpixelPath,'file') && exist(handles.fullImgPath,'file')
     
-    a = load(fullAnnoPath,'anno');
+    a = load(handles.fullAnnoSuperpixelPath,'anno');
     anno = a.anno;
     handles.superPixels = anno;
     handles.readyToLabel = true;

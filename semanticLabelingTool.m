@@ -125,7 +125,12 @@ handles.pathToPythonScript = pathToPythonScript;
 % at the start of the program
 handles.imgName = '';
 handles.imgId = '';
+
 handles.fullImgPath = '';
+handles.fullAnnoFreePath = '';
+handles.fullAnnoSuperpixelPath = '';
+handles.fullInferencePath = '';
+
 handles.img = [];
 handles.imgIdx = [];
 handles.filelist = [];

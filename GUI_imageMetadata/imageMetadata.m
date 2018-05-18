@@ -22,7 +22,7 @@ function varargout = imageMetadata(varargin)
 
 % Edit the above text to modify the response to help imageMetadata
 
-% Last Modified by GUIDE v2.5 16-May-2018 21:14:11
+% Last Modified by GUIDE v2.5 18-May-2018 17:25:04
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -76,9 +76,9 @@ varargout{1} = handles.output;
 end
 
 
-% --- Executes when selected cell(s) is changed in TableMetadata.
-function TableMetadata_CellSelectionCallback(hObject, eventdata, handles)
-% hObject    handle to TableMetadata (see GCBO)
+% --- Executes when selected cell(s) is changed in tableMetadata.
+function tableMetadata_CellSelectionCallback(hObject, eventdata, handles)
+% hObject    handle to tableMetadata (see GCBO)
 % eventdata  structure with the following fields (see MATLAB.UI.CONTROL.TABLE)
 %	Indices: row and column indices of the cell(s) currently selecteds
 % handles    structure with handles and user data (see GUIDATA)

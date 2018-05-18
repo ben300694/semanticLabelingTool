@@ -21,7 +21,8 @@ if runInBackground == true
     systemCommand = [systemCommand, ' ', '&'];
 end
 
-disp(['Calling ', systemCommand])
-system(systemCommand, '-echo')
+disp(['Calling ', systemCommand]);
+ret = system(systemCommand, '-echo');
+disp(['System call returned', ret]);
 
 end

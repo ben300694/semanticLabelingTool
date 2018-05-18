@@ -27,7 +27,7 @@ set(handles.stImgName, 'String', handles.imgId);
 handles.fullImgPath = [handles.imgDir, handles.imgName];
 
 % Update the values in the table in GUI_imageMetadata
-updateMetadata(hObject, handles);
+handles = updateMetadata(hObject, handles);
 
 if exist(handles.fullImgPath,'file')
     handles.img = imread(handles.fullImgPath);
