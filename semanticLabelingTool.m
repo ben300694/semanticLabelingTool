@@ -162,8 +162,8 @@ set(handles.etRegionSize,'String',num2str(get(handles.sliderRegionSize,'Value'))
 set(handles.etRegularizer,'String',num2str(get(handles.sliderRegularizer,'Value')));
 
 % Get current selected label
-indName = get(get(handles.Labels ,'SelectedObject'),'String'); 
-ind = find(ismember(handles.colorNames,indName)); % Get ind corresponding to color / label
+indName = get(get(handles.Labels, 'SelectedObject'), 'String'); 
+ind = find(ismember(handles.colorNames, indName)); % Get ind corresponding to color / label
 handles.selectedLabel = ind;
 
 % Update the text in the edit textboxes
@@ -461,7 +461,7 @@ set(handles.myCanvas, 'PickableParts', 'all');
 % disp(handles.myCanvas);
 
 if ~isempty(handles.myCanvas)
-    set(handles.myCanvas, 'ButtonDownFcn', @(src,eventdata)positionAndButton(src,eventdata,hObject));
+    set(handles.myCanvas, 'ButtonDownFcn', @(src,eventdata)changeSuperpixelLabel(src,eventdata,hObject));
 else
     msg = {'handles.myCanvas' 'is empty'};
     set(handles.stStatus,'String',msg);

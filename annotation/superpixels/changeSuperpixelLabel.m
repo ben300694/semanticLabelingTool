@@ -1,4 +1,4 @@
-function positionAndButton(src, eventdata, hObject)
+function changeSuperpixelLabel(src, eventdata, hObject)
 
 Position = get( ancestor(src,'axes'), 'CurrentPoint' );
 Button = get( ancestor(src,'figure'), 'SelectionType' );
@@ -13,9 +13,11 @@ Point = Position(end,:);
 % plot(Point(1),Point(2),'r+');
 % hold off
 
+% Get currently selected label
 indName = get(get(handles.Labels ,'SelectedObject'),'String');
 ind = find(ismember(handles.colorNames,indName)); % Get ind corresponding to color / label
 handles.selectedLabel = ind;
+
 Position = int32(Position);
 
 if ~isempty(Position)
@@ -39,7 +41,7 @@ if ~isempty(Position)
 
     % Have to set the ButtonDownFcn again 
     % because a plot clears the objects properties
-    set(handles.myCanvas, 'ButtonDownFcn', @(src,eventdata)positionAndButton(src,eventdata,hObject));    
+    set(handles.myCanvas, 'ButtonDownFcn', @(src,eventdata)changeSuperpixelLabel(src,eventdata,hObject));    
         
     msg = {'Please hit ''Save''' 'to store modifications'};
     set(handles.stStatus, 'String', msg);
