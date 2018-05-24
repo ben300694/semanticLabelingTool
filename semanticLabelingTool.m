@@ -117,8 +117,6 @@ handles.pathToPythonScript = pathToPythonScript;
 % handles.snapshotDir = '/media/data/bruppik/deeplab_resnet_test_dataset/snapshots_finetune';
 % handles.ckptFile = '/media/data/bruppik/deeplab_resnet_test_dataset/snapshots_finetune/model_finetuned.ckpt-350';
 
-
-
 % disp(handles)
 
 % Initialize the variables to the correct values
@@ -149,8 +147,8 @@ handles.currentlyShownLabels = [];
 handles.useCRF = true;
 
 % Load the colormap
-if ~exist('colormap.mat')
-    error('Please create a colormap file in the current folder')
+if ~exist('colormap.mat', 'file')
+    error('Please create a colormap.mat file in the current folder')
 end
 
 colMap = load('colormap.mat');
@@ -160,6 +158,13 @@ handles.colors = colMap.colorRGBValues;
 % Get parameters for calculation of superpixels
 set(handles.etRegionSize,'String',num2str(get(handles.sliderRegionSize,'Value')));
 set(handles.etRegularizer,'String',num2str(get(handles.sliderRegularizer,'Value')));
+
+% Load the label names handles.colorNames int
+% the LabelTable
+
+set(handles.TableLabels, 'Data', handles.colorNames);
+set(handles.TableLabels, 'ColumnWidth', {150});
+
 
 % Get current selected label
 indName = get(get(handles.Labels, 'SelectedObject'), 'String'); 
