@@ -13,11 +13,6 @@ Point = Position(end,:);
 % plot(Point(1),Point(2),'r+');
 % hold off
 
-% Get currently selected label
-indName = get(get(handles.Labels ,'SelectedObject'),'String');
-ind = find(ismember(handles.colorNames,indName)); % Get ind corresponding to color / label
-handles.selectedLabel = ind;
-
 Position = int32(Position);
 
 if ~isempty(Position)

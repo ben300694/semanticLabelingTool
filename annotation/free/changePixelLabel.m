@@ -26,11 +26,6 @@ if ~isempty(Position)
                ' selected']};
         set(handles.stInfoStatus,'String',msg);
         
-        % Get currently selected label
-        indName = get(get(handles.Labels, 'SelectedObject'), 'String');
-        ind = find(ismember(handles.colorNames, indName)); % Get ind corresponding to color / label
-        handles.selectedLabel = ind;
-        
         handles.currentlyShownLabels(Point(2),Point(1)) = handles.selectedLabel;
         handles.freeAnnotationLabels(Point(2),Point(1)) = handles.selectedLabel;
 

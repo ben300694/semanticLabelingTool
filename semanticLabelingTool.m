@@ -22,7 +22,7 @@ function varargout = semanticLabelingTool(varargin)
 
 % Edit the above text to modify the response to help semanticLabelingTool
 
-% Last Modified by GUIDE v2.5 11-May-2018 19:18:15
+% Last Modified by GUIDE v2.5 24-May-2018 18:10:45
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -165,11 +165,8 @@ set(handles.etRegularizer,'String',num2str(get(handles.sliderRegularizer,'Value'
 set(handles.TableLabels, 'Data', handles.colorNames);
 set(handles.TableLabels, 'ColumnWidth', {150});
 
-
-% Get current selected label
-indName = get(get(handles.Labels, 'SelectedObject'), 'String'); 
-ind = find(ismember(handles.colorNames, indName)); % Get ind corresponding to color / label
-handles.selectedLabel = ind;
+% Set default currently selected label to '1'
+handles.selectedLabel = 1;
 
 % Update the text in the edit textboxes
 set(handles.etImagePath, 'String', handles.imgDir);
@@ -342,12 +339,10 @@ guidata(hObject, handles);
 
 end
 
-
 function etFilelist_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of etFilelist as text
 %        str2double(get(hObject,'String')) returns contents of etFilelist as a double
 end
-
 
 % --- Executes during object creation, after setting all properties.
 function etFilelist_CreateFcn(hObject, eventdata, handles)
@@ -358,7 +353,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 end
 
-
 % --- Executes on button press in btnLoadImgFilelist.
 function btnLoadImgFilelist_Callback(hObject, eventdata, handles)
 filelistFile = uigetfile(handles.filelistFile);
@@ -367,10 +361,25 @@ handles.filelistFile = filelistFile;
 guidata(hObject, handles); 
 end
 
+%% Callbacks for Tables
+
 % --- Executes when selected cell(s) is changed in TableFilelist.
 function TableFilelist_CellSelectionCallback(hObject, eventdata, handles)
 handles.imgIdx = eventdata.Indices(1);
 handles = updateImg(handles.imgIdx,hObject,handles);
+guidata(hObject, handles);
+end
+
+% --- Executes when selected cell(s) is changed in TableLabels.
+function TableLabels_CellSelectionCallback(hObject, eventdata, handles)
+% eventdata  structure with the following fields (see MATLAB.UI.CONTROL.TABLE)
+%	Indices: row and column indices of the cell(s) currently selecteds
+
+% Set currently selected label
+handles.selectedLabel = eventdata.Indices(1);
+disp(['Currently selected label: ', num2str(handles.selectedLabel), ...
+        ' with name: ', handles.colorNames{handles.selectedLabel}]);
+
 guidata(hObject, handles);
 end
 
@@ -394,10 +403,6 @@ if (handles.readyToLabel);
     inside = getSuperpixelsInPolygon(line,superPixels.Centroid);
     superPixelImg = superPixels.superPixelImg;
     overlayMask = paintSuperpixels(inside,superPixelImg);
-
-    indName = get(get(handles.Labels ,'SelectedObject'),'String');
-    ind = find(ismember(handles.colorNames,indName)); % Get ind corresponding to color / label
-    handles.selectedLabel = ind;
     
     labelImg(overlayMask) = handles.selectedLabel ; % Colorize selected polygon
     handles.superPixels.labelImg = labelImg; % Update the overlay
@@ -436,11 +441,6 @@ overlayMask = poly2mask(xi, yi, m, n);
 % imagesc(overlayMask)
 
 % Change label of these Pixels
-
-indName = get(get(handles.Labels, 'SelectedObject'), 'String');
-ind = find(ismember(handles.colorNames, indName)); % Get ind corresponding to color / label
-handles.selectedLabel = ind;
-
 labelImg(overlayMask) = handles.selectedLabel ; % Colorize selected polygon
 
 % Update the overlay
@@ -750,11 +750,13 @@ function figure1_WindowKeyPressFcn(hObject, eventdata, handles)
 % determine the key that was pressed 
 keyPressed = eventdata.Key;
 
-if strcmpi(keyPressed,'f')
-     % set focus to the button
-     % uicontrol(handles.btnDrawFreePolygon);
-     % call the callback
-     btnDrawFreePolygon_Callback(handles.btnDrawFreePolygon,[],handles);
+if strcmpi(keyPressed, 'f')
+    % set focus to the button
+    % uicontrol(handles.btnDrawFreePolygon);
+    % call the callback
+    btnDrawFreePolygon_Callback(handles.btnDrawFreePolygon, [], handles);
+elseif strcmpi(keyPressed, 'i')
+    btnGetInfo_Callback(handles.btnGetInfo, [], handles);
 end
 
 end
