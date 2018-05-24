@@ -733,7 +733,32 @@ function menuLoadInferenceCRF_Callback(hObject, eventdata, handles)
 drawInference(handles.imgIdx, hObject, handles, true);
 end
 
-%% Add New Label
+%% Keyboard shortcuts
+
+% --- Executes on key press with focus on figure1 or any of its controls.
+function figure1_WindowKeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.FIGURE)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+
+% determine the key that was pressed 
+keyPressed = eventdata.Key;
+
+if strcmpi(keyPressed, 'f')
+    % set focus to the button
+    % uicontrol(handles.btnDrawFreePolygon);
+    % call the callback
+    btnDrawFreePolygon_Callback(handles.btnDrawFreePolygon, [], handles);
+elseif strcmpi(keyPressed, 'i')
+    btnGetInfo_Callback(handles.btnGetInfo, [], handles);
+end
+
+end
+
+
 
 function etNewLabelName_Callback(hObject, eventdata, handles)
 % hObject    handle to etNewLabelName (see GCBO)
@@ -742,8 +767,6 @@ function etNewLabelName_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of etNewLabelName as text
 %        str2double(get(hObject,'String')) returns contents of etNewLabelName as a double
-
-end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -756,8 +779,6 @@ function etNewLabelName_CreateFcn(hObject, eventdata, handles)
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
-end
-
 end
 
 
@@ -784,37 +805,10 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-end
-
 
 % --- Executes on button press in btnAddNewLabel.
 function btnAddNewLabel_Callback(hObject, eventdata, handles)
 % hObject    handle to btnAddNewLabel (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-end
-
-%% Keyboard shortcuts
-
-% --- Executes on key press with focus on figure1 or any of its controls.
-function figure1_WindowKeyPressFcn(hObject, eventdata, handles)
-% hObject    handle to figure1 (see GCBO)
-% eventdata  structure with the following fields (see MATLAB.UI.FIGURE)
-%	Key: name of the key that was pressed, in lower case
-%	Character: character interpretation of the key(s) that was pressed
-%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
-% handles    structure with handles and user data (see GUIDATA)
-
-% determine the key that was pressed 
-keyPressed = eventdata.Key;
-
-if strcmpi(keyPressed, 'f')
-    % set focus to the button
-    % uicontrol(handles.btnDrawFreePolygon);
-    % call the callback
-    btnDrawFreePolygon_Callback(handles.btnDrawFreePolygon, [], handles);
-elseif strcmpi(keyPressed, 'i')
-    btnGetInfo_Callback(handles.btnGetInfo, [], handles);
-end
-
 end
