@@ -742,9 +742,7 @@ function etNewLabelName_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of etNewLabelName as text
 %        str2double(get(hObject,'String')) returns contents of etNewLabelName as a double
-
 end
-
 
 % --- Executes during object creation, after setting all properties.
 function etNewLabelName_CreateFcn(hObject, eventdata, handles)
@@ -760,8 +758,6 @@ end
 
 end
 
-
-
 function etNewRGBValues_Callback(hObject, eventdata, handles)
 % hObject    handle to etNewRGBValues (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -770,7 +766,6 @@ function etNewRGBValues_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of etNewRGBValues as text
 %        str2double(get(hObject,'String')) returns contents of etNewRGBValues as a double
 end
-
 
 % --- Executes during object creation, after setting all properties.
 function etNewRGBValues_CreateFcn(hObject, eventdata, handles)
@@ -792,6 +787,40 @@ function btnAddNewLabel_Callback(hObject, eventdata, handles)
 % hObject    handle to btnAddNewLabel (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+newLabelName = get(handles.etNewLabelName, 'String');
+% disp(newLabelName);
+newRGBValuesCommaSeparated = get(handles.etNewRGBValues, 'String');
+newRGBValues = str2num(newRGBValuesCommaSeparated);
+
+% Check format of RGB Value input
+if isempty(newRGBValues) || ~(length(newRGBValues) == 3) || ~all(newRGBValues >= 0 & newRGBValues <=255)
+   disp('Invalid RGB-Values entered!');
+   disp(newRGBValues);
+   return;
+end
+
+% Remember: Have initialized
+% handles.colorNames = colMap.colorNames;
+% handles.colors = colMap.colorRGBValues;
+
+handles.colorNames{end+1} = newLabelName;
+handles.colors = [handles.colors; double(newRGBValues)]; 
+
+% disp(handles.colors);
+
+% Update the TableLabels with the new label
+handles = updateTableLabels(handles);
+
+% Save new values to 'colormap.mat'
+colorNames = handles.colorNames;
+colorRGBValues = handles.colors;
+save('colormap.mat', 'colorNames', 'colorRGBValues');
+
+% TODO Change NUM_OF_CLASSES in config.yml
+
+guidata(hObject, handles);
+
 end
 
 %% Keyboard shortcuts
