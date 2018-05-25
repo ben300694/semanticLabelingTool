@@ -66,8 +66,8 @@ handles.output = hObject;
 % Change this path to the correct configuration file in
 % the tensorflow-deeplab-resnet repository
 %%%%%%%%%%
-yaml_file = '/media/remote_home/bruppik/git-source/ben300694/tensorflow-deeplab-resnet/config.yml';
-YamlStruct = ReadYaml(yaml_file);
+handles.yaml_file = '/media/remote_home/bruppik/git-source/ben300694/tensorflow-deeplab-resnet/config.yml';
+handles.YamlStruct = ReadYaml(handles.yaml_file);
 % disp(YamlStruct.directories.annotations.ANNO_FREE_DIRECTORY)
 
 %%%%%%%%%%
@@ -82,23 +82,23 @@ pathToPythonScript = '/media/remote_home/bruppik/git-source/ben300694/tensorflow
 
 % Set the path to all the data directories
 
-handles.imgDir = YamlStruct.directories.IMAGE_DIR;
+handles.imgDir = handles.YamlStruct.directories.IMAGE_DIR;
 
 % Set this manually to load the entire filelist even when experimenting
 % with different filelists in Python
 % Uncomment the next line to load from the configuration file:
-% handles.filelistFile = YamlStruct.directories.lists.DATA_FILELIST_PATH;
+% handles.filelistFile = handles.YamlStruct.directories.lists.DATA_FILELIST_PATH;
 handles.filelistFile = '/media/data/bruppik/cvg11/deeplab_resnet_test_dataset/filelist.txt';
 
-handles.trainFile = YamlStruct.directories.lists.DATA_TRAIN_LIST_PATH;
+handles.trainFile = handles.YamlStruct.directories.lists.DATA_TRAIN_LIST_PATH;
 
-handles.annoFreeDir = YamlStruct.directories.annotations.ANNO_FREE_DIRECTORY;
-handles.annoPNGDir = YamlStruct.directories.annotations.ANNO_PNG_DIRECTORY;
-handles.annoSuperpixelsDir = YamlStruct.directories.annotations.ANNO_SUPERPIXELS_DIRECTORY;
+handles.annoFreeDir = handles.YamlStruct.directories.annotations.ANNO_FREE_DIRECTORY;
+handles.annoPNGDir = handles.YamlStruct.directories.annotations.ANNO_PNG_DIRECTORY;
+handles.annoSuperpixelsDir = handles.YamlStruct.directories.annotations.ANNO_SUPERPIXELS_DIRECTORY;
 
-handles.inferenceDir = YamlStruct.directories.inference.MATLAB_SAVE_DIRECTORY;
-handles.snapshotDir = YamlStruct.directories.training.SNAPSHOT_DIRECTORY;
-handles.ckptFile = YamlStruct.RESTORE_FROM;
+handles.inferenceDir = handles.YamlStruct.directories.inference.MATLAB_SAVE_DIRECTORY;
+handles.snapshotDir = handles.YamlStruct.directories.training.SNAPSHOT_DIRECTORY;
+handles.ckptFile = handles.YamlStruct.RESTORE_FROM;
 
 handles.pathToPythonBinary = pathToPythonBinary;
 handles.pathToPythonScript = pathToPythonScript;
@@ -817,7 +817,10 @@ colorNames = handles.colorNames;
 colorRGBValues = handles.colors;
 save('colormap.mat', 'colorNames', 'colorRGBValues');
 
-% TODO Change NUM_OF_CLASSES in config.yml
+% TODO Change NUM_CLASSES in config.yml
+
+handles.YamlStruct.NUM_CLASSES = handles.YamlStruct.NUM_CLASSES + 1;
+WriteYaml(handles.yaml_file, handles.YamlStruct);
 
 guidata(hObject, handles);
 

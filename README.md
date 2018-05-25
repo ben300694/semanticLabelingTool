@@ -11,17 +11,17 @@ using [tensorflow-deeplab](https://github.com/DrSleep/tensorflow-deeplab-resnet)
 ## Setup:
  - Download and extract [vl_feat library](http://www.vlfeat.org/) 
    including the function to compute superpixels `vl_slic`
- - Download and extract [yamlmatlab](https://code.google.com/archive/p/yamlmatlab/)
-   (this is a module for reading configuration files in the
-   yaml format)
  - Add the all extracted folders to your
    Matlab path
    (a sample `startup.m` is included in the repository under
-   `examples/example_startup.m`)
+   `examples/startup_example.m`)
  - Install tensorflow (preferably tensorflow-gpu)
  - Clone the [modified version](https://github.com/ben300694/tensorflow-deeplab-resnet)
    of Deeplab Resnet
    (this also contains necessary configuration files for the matlab script)
+   In case that this does not work
+   there is also an example configuration file under
+   `examples/config_example.yml`.
  - Edit the following variables in `semanticLabelingTool.m`:
     - `yaml_file` has to point to the `config.yml` in the tensorflow-deeplab-resnet repository
     - `pathToPythonBinary` has to point to your python binary, preferably one
@@ -75,8 +75,10 @@ You need the following Matlab functions:
        amount of work required for labeling,
        for this add the posibility to change the labels on a pixel by pixel
        level (and inside of a polygon without relying on superpixels)
+ - [x] Implement adding new labels classes in the interface
+ - [ ] Look into Pix4D and evaluate if it is possible to get ground truth data
+       for the geometry of a scene from there
  - [ ] Label more training data
  - [ ] Find good metaparameters for finetuning the model
- - [ ] Implement adding and removing classes in the interface
  - [ ] Include inference of geometry of the scene (depth, surface normals, ...)
  - [ ] Higher level semantics, e.g. classification if landing is possible on surface or not
