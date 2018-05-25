@@ -847,6 +847,13 @@ if strcmpi(keyPressed, 'f')
     btnDrawFreePolygon_Callback(handles.btnDrawFreePolygon, [], handles);
 elseif strcmpi(keyPressed, 'i')
     btnGetInfo_Callback(handles.btnGetInfo, [], handles);
+elseif strcmpi(keyPressed, 'p')
+    pan on;
+elseif strcmpi(keyPressed, 's')
+    btnSelectSuperpixels_Callback(handles.btnSelectSuperpixels, [], handles)
+elseif strcmpi(keyPressed, 'z')
+    zoom on;
+
 end
 
 end
