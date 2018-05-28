@@ -1,4 +1,7 @@
 function computeSegments(hObject,eventdata,handles)
+
+disp('Calling computeSegments');
+
 imgIdx = handles.imgIdx;
 handles.imgName = handles.filelist{imgIdx};
 
@@ -16,13 +19,16 @@ if exist(fullImgPath,'file')
     drawnow;
     regionSize = handles.regionSize;
     regularizer = handles.regularizer;
+    disp('Calling getAllSuperpixels');
     superPixels = getAllSuperpixels(handles.img,regionSize,regularizer);
+    disp('getAllSuperpixels returned');
     currentCanvas = imshow(superPixels.oversegImage, 'Parent', handles.myCanvas);
     set(currentCanvas, 'HitTest', 'off');
     handles.superPixels = superPixels;
     set(handles.stStatus,'String','Done');
-    handles.readyToLabel = true; % Set flag that image can be labels
-    guidata(hObject, handles);  
+    
+    handles.readyToLabel = true; % Set flag that image can be labeled
+    guidata(hObject, handles);
 else
     disp('No img found');
 end
